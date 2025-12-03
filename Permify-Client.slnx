@@ -1,4 +1,10 @@
 <Solution>
+  <Folder Name="/examples/" />
+  <Folder Name="/examples/aspire/">
+    <Project Path="examples/aspire/Permify.Client.AotExample/Permify.Client.AotExample.csproj" />
+    <Project Path="examples/aspire/Permify.Client.AppHost/Permify.Client.AppHost.csproj" />
+    <Project Path="examples/aspire/Permify.Client.ServiceDefaults/Permify.Client.ServiceDefaults.csproj" />
+  </Folder>
   <Project Path="src/Permify.Client.Grpc/Permify.Client.Grpc.csproj" />
   <Project Path="src/Permify.Client/Permify.Client.csproj" />
 </Solution>
