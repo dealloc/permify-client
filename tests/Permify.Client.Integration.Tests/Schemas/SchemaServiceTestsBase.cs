@@ -1,4 +1,5 @@
 using Permify.Client.Contracts;
+using Permify.Client.Integration.Tests.TestSchemas;
 using Permify.Client.Models.Schema;
 
 namespace Permify.Client.Integration.Tests.Schemas;
@@ -9,8 +10,8 @@ namespace Permify.Client.Integration.Tests.Schemas;
 /// </summary>
 public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTestsBase(endpointName)
 {
-    [Fact]
-    public async Task Schema_Service_Can_Write()
+    [Theory, MemberData(nameof(SchemaLoader.GetAllValid), MemberType = typeof(SchemaLoader))]
+    public async Task Schema_Service_Can_Write(string filename, string schema)
     {
         // Arrange
         var cancellationToken = CancellationToken.None;
@@ -21,19 +22,13 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
             var response = await schemaService.WriteSchemaAsync(
                 new WriteSchemaRequest(
-                    Schema: """
-                            entity user {}
-                            entity document {
-                                relation owner @user
-                                action view = owner
-                            }
-                            """
+                    Schema: schema
                 ),
                 cancellationToken
             );
 
             // Assert
-            Assert.NotNull(response);
+            Assert.NotNull(filename); // to avoid unused parameter warning
         }
     }
 

@@ -1,0 +1,6 @@
+entity user {}
+
+entity document {
+    relation owner @user
+    action view = owner
+}

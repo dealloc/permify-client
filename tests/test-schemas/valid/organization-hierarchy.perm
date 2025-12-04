@@ -1,0 +1,18 @@
+entity user {}
+
+entity organization {
+    relation admin @user
+    relation member @user
+
+    action manage = admin
+    action view = admin or member
+}
+
+entity document {
+    relation parent @organization
+    relation owner @user
+
+    action view = owner or parent.admin
+    action edit = owner
+    action delete = owner or parent.admin
+}

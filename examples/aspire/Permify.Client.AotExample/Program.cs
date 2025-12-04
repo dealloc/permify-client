@@ -22,7 +22,7 @@ app.MapDefaultEndpoints();
 app.MapGet("/",
     async static ([FromServices] ISchemaService svc) =>
     await svc.ListSchemaAsync(new(), CancellationToken.None));
-    // await svc.WriteSchemaAsync(new WriteSchemaRequest("entity user {}"), CancellationToken.None));
+// await svc.WriteSchemaAsync(new WriteSchemaRequest("entity user {}"), CancellationToken.None));
 
 
 app.Run();
