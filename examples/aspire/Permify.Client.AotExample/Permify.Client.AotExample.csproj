@@ -9,6 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\src\Permify.Client.Grpc\Permify.Client.Grpc.csproj" />
+      <ProjectReference Include="..\..\..\src\Permify.Client.Http\Permify.Client.Http.csproj" />
       <ProjectReference Include="..\Permify.Client.ServiceDefaults\Permify.Client.ServiceDefaults.csproj" />
     </ItemGroup>
 
