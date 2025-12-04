@@ -5,15 +5,11 @@
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <UserSecretsId>de24d77d-347a-486f-9893-957843dc80f4</UserSecretsId>
+        <UserSecretsId>14a877b4-d60f-4748-886c-1393944c8d1a</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Aspire.Hosting.AppHost" Version="13.0.2" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\Permify.Client.AotExample\Permify.Client.AotExample.csproj" />
     </ItemGroup>
 
 </Project>

@@ -17,6 +17,6 @@ public sealed record ListSchemaResponse(
     /// </summary>
     public sealed record SchemaItem(
         string Version,
-        DateTime CreatedAt
+        DateTimeOffset CreatedAt
     );
 };

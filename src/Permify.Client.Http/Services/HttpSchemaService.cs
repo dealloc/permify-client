@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Microsoft.Extensions.Options;
 
 using Permify.Client.Contracts;
@@ -43,7 +45,11 @@ internal sealed class HttpSchemaService(
         return new ListSchemaResponse(
             response!.Head!,
             response!.Schemas!.Select(item =>
-                new ListSchemaResponse.SchemaItem(item.Version!, DateTime.Parse(item.CreatedAt!))).ToList(),
+                new ListSchemaResponse.SchemaItem(item.Version!, DateTimeOffset.ParseExact(
+                    item.CreatedAt!,
+                    "yyyy-MM-dd HH:mm:ss zzz 'UTC'",
+                    CultureInfo.InvariantCulture
+                ))).ToList(),
             response!.ContinuousToken!
         );
     }

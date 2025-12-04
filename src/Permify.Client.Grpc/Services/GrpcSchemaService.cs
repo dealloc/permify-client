@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Base.V1;
 
 using Microsoft.Extensions.Options;
@@ -41,7 +43,11 @@ public sealed class GrpcSchemaService(
         return new ListSchemaResponse(
             response.Head,
             response.Schemas
-                .Select(item => new ListSchemaResponse.SchemaItem(item.Version, DateTime.Parse(item.CreatedAt)))
+                .Select(item => new ListSchemaResponse.SchemaItem(item.Version, DateTimeOffset.ParseExact(
+                    item.CreatedAt,
+                    "yyyy-MM-dd HH:mm:ss zzz 'UTC'",
+                    CultureInfo.InvariantCulture
+                )))
                 .ToList(),
             response.ContinuousToken
         );
