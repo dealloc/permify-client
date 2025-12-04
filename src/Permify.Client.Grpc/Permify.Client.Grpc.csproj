@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <PublishAot>true</PublishAot>
+    <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
+
   <ItemGroup>
     <Protobuf Include="protos/**/*.proto" GrpcServices="Client" ProtoRoot="protos/" />
     <PackageReference Include="Google.Protobuf" Version="3.33.1" />

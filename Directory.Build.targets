@@ -1,0 +1,10 @@
+<Project>
+  <!-- This file is imported AFTER project files, so properties set in projects are available -->
+
+  <PropertyGroup Condition="'$(IsAotCompatible)' == 'true'">
+    <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+    <EnableRequestDelegateGenerator>true</EnableRequestDelegateGenerator>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+</Project>
