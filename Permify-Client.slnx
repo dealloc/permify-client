@@ -6,5 +6,6 @@
     <Project Path="examples/aspire/Permify.Client.ServiceDefaults/Permify.Client.ServiceDefaults.csproj" />
   </Folder>
   <Project Path="src/Permify.Client.Grpc/Permify.Client.Grpc.csproj" />
+  <Project Path="src/Permify.Client.Http/Permify.Client.Http.csproj" />
   <Project Path="src/Permify.Client/Permify.Client.csproj" />
 </Solution>

@@ -33,6 +33,18 @@ dotnet test
 dotnet publish -c Release # Validates AOT compatibility
 ```
 
+## Updating Kioto generated HTTP client
+
+We use [`just`](https://just.systems/) as a task runner, regenerating the Kiota HTTP client looks like this:
+
+```bash
+just kiota
+```
+
+If you don't want to install `just`, you can open the `justfile` and execute the command manually.
+This currently requires having `podman` (or `docker`) installed since the Kiota CLI does not support
+.NET 10 yet, but the generated code is compatible with it.
+
 ## Pull Requests
 
 - Target `master` branch

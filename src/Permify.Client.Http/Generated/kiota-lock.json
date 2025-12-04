@@ -1,0 +1,34 @@
+{
+  "descriptionHash": "3123399457C38236F6A78ACC44726E6117AC2D5FA58E4751D0EE51F896A67F5872BE379E44CC5F3838CB9397A21F44383185866FF6890D6EC22A794D4948BC84",
+  "descriptionLocation": "https://raw.githubusercontent.com/Permify/permify/887dabd61bbaf1951b93faa563db1e4b26c7caa7/docs/api-reference/openapiv2/apidocs.swagger.json",
+  "lockFileVersion": "1.0.0",
+  "kiotaVersion": "1.29.0",
+  "clientClassName": "ApiClient",
+  "typeAccessModifier": "Internal",
+  "clientNamespaceName": "Permify.Client.Http.Generated",
+  "language": "CSharp",
+  "usesBackingStore": false,
+  "excludeBackwardCompatible": true,
+  "includeAdditionalData": true,
+  "disableSSLValidation": false,
+  "serializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Text.TextSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Form.FormSerializationWriterFactory",
+    "Microsoft.Kiota.Serialization.Multipart.MultipartSerializationWriterFactory"
+  ],
+  "deserializers": [
+    "Microsoft.Kiota.Serialization.Json.JsonParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Text.TextParseNodeFactory",
+    "Microsoft.Kiota.Serialization.Form.FormParseNodeFactory"
+  ],
+  "structuredMimeTypes": [
+    "application/json",
+    "text/plain;q=0.9",
+    "application/x-www-form-urlencoded;q=0.2",
+    "multipart/form-data;q=0.1"
+  ],
+  "includePatterns": [],
+  "excludePatterns": [],
+  "disabledValidationRules": []
+}
