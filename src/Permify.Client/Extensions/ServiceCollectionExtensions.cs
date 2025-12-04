@@ -17,12 +17,14 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to register the services in.</param>
     /// <param name="configuration">The configuration to bind from.</param>
-    public static void AddPermifyCore(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPermifyCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IValidateOptions<PermifyOptions>, ValidatePermifyOptions>();
 
         services.Configure<PermifyOptions>(configuration)
             .AddOptionsWithValidateOnStart<PermifyOptions>();
+
+        return AddPermifyServices(services);
     }
 
     /// <summary>
@@ -30,8 +32,20 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to register the services in.</param>
     /// <param name="configure">An action to configure the Permify options.</param>
-    public static void AddPermifyCore(this IServiceCollection services, Action<PermifyOptions> configure)
+    public static IServiceCollection AddPermifyCore(this IServiceCollection services, Action<PermifyOptions> configure)
     {
         services.Configure(configure);
+
+        return AddPermifyServices(services);
+    }
+
+    /// <summary>
+    /// Handles adding the services required for all implementations of the Permify client.
+    /// </summary>
+    private static IServiceCollection AddPermifyServices(this IServiceCollection services)
+    {
+        services.AddServiceDiscoveryCore();
+
+        return services;
     }
 }

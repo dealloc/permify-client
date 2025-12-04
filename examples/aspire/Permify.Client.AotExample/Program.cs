@@ -7,8 +7,8 @@ var builder = WebApplication.CreateSlimBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services.AddPermifyCore(builder.Configuration.GetSection("Permify"));
-// builder.Services.AddPermifyHttpClients();
-builder.Services.AddPermifyGrpcClients();
+// builder.Services.AddPermifyHttpClients("http://permify");
+builder.Services.AddPermifyGrpcClients("http://_grpc.permify");
 
 builder.Services.ConfigureHttpJsonOptions(options =>
 {

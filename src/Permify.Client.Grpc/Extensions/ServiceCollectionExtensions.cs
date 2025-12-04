@@ -15,9 +15,12 @@ public static class ServiceCollectionExtensions
     /// Adds clients to interact with the Permify HTTP API.
     /// </summary>
     /// <param name="services"></param>
-    public static void AddPermifyGrpcClients(this IServiceCollection services)
+    /// <param name="baseUrl"></param>
+    public static IServiceCollection AddPermifyGrpcClients(this IServiceCollection services, string baseUrl)
     {
-        services.AddGrpcClient<Schema.SchemaClient>(options => options.Address = new Uri("http://_grpc.permify"));
+        services.AddGrpcClient<Schema.SchemaClient>(options => options.Address = new Uri(baseUrl));
         services.AddScoped<ISchemaService, GrpcSchemaService>();
+
+        return services;
     }
 }
