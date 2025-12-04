@@ -19,4 +19,22 @@ public sealed class GrpcSchemaService(Base.V1.Schema.SchemaClient client) : ISch
 
         return new WriteSchemaResponse(response.SchemaVersion);
     }
+
+    /// <inheritdoc />
+    public async Task<ListSchemaResponse> ListSchemaAsync(ListSchemaRequest request,
+        CancellationToken cancellationToken)
+    {
+        var response = await client.ListAsync(new SchemaListRequest
+        {
+            TenantId = "t1", PageSize = (uint)request.PageSize, ContinuousToken = request.ContinuousToken ?? string.Empty
+        }).ResponseAsync;
+
+        return new ListSchemaResponse(
+            response.Head,
+            response.Schemas
+                .Select(item => new ListSchemaResponse.SchemaItem(item.Version, DateTime.Parse(item.CreatedAt)))
+                .ToList(),
+            response.ContinuousToken
+        );
+    }
 }

@@ -9,4 +9,6 @@ namespace Permify.Client;
 /// </summary>
 [JsonSerializable(typeof(WriteSchemaRequest))]
 [JsonSerializable(typeof(WriteSchemaResponse))]
+[JsonSerializable(typeof(ListSchemaRequest))]
+[JsonSerializable(typeof(ListSchemaResponse))]
 public sealed partial class PermifyJsonSerializerContext : JsonSerializerContext;
