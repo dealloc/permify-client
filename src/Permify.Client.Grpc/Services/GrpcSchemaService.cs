@@ -23,8 +23,10 @@ public sealed class GrpcSchemaService(
 ) : ISchemaService
 {
     /// <inheritdoc />
-    public async Task<WriteSchemaResponse> WriteSchemaAsync(WriteSchemaRequest request,
-        CancellationToken cancellationToken)
+    public async Task<WriteSchemaResponse> WriteSchemaAsync(
+        WriteSchemaRequest request,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -43,8 +45,10 @@ public sealed class GrpcSchemaService(
     }
 
     /// <inheritdoc />
-    public async Task<ListSchemaResponse> ListSchemaAsync(ListSchemaRequest request,
-        CancellationToken cancellationToken)
+    public async Task<ListSchemaResponse> ListSchemaAsync(
+        ListSchemaRequest request,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
@@ -67,7 +71,10 @@ public sealed class GrpcSchemaService(
     }
 
     /// <inheritdoc />
-    public async Task<PartialSchemaUpdateResponse> PartialUpdateSchemaAsync(PartialSchemaUpdateRequest request, CancellationToken cancellationToken)
+    public async Task<PartialSchemaUpdateResponse> PartialUpdateSchemaAsync(
+        PartialSchemaUpdateRequest request,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
