@@ -1,4 +1,7 @@
+using System.Text.RegularExpressions;
+
 using Permify.Client.Contracts;
+using Permify.Client.Exceptions;
 using Permify.Client.Integration.Tests.TestSchemas;
 using Permify.Client.Models.Schema;
 
@@ -26,6 +29,34 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
                 ),
                 cancellationToken
             );
+
+            // Assert
+            Assert.NotNull(filename); // to avoid unused parameter warning
+        }
+    }
+
+    [Theory, MemberData(nameof(SchemaLoader.GetAllInvalid), MemberType = typeof(SchemaLoader))]
+    public async Task Schema_Service_Cannot_Write_Invalid_Schema(string filename, string schema)
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using (app)
+        {
+            // Act
+            var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+            await Assert.ThrowsAsync<PermifyInternalException>(async () =>
+                {
+                    await schemaService.WriteSchemaAsync(
+                        new WriteSchemaRequest(
+                            Schema: schema
+                        ),
+                        cancellationToken
+                    );
+                },
+                exception => Regex.IsMatch(exception.Message, "^[0-9]+:[0-9]+")
+                    ? null
+                    : "Thrown exception does not resemble error");
 
             // Assert
             Assert.NotNull(filename); // to avoid unused parameter warning
@@ -66,9 +97,10 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         {
             // Act
             var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
-            await schemaService.ListSchemaAsync(new(), cancellationToken);
 
             // Assert
+            await Assert.ThrowsAsync<PermifyNotFoundException>(async () =>
+                await schemaService.ListSchemaAsync(new(), cancellationToken));
         }
     }
 }

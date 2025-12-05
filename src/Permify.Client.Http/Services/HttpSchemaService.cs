@@ -3,6 +3,8 @@ using System.Globalization;
 using Microsoft.Extensions.Options;
 
 using Permify.Client.Contracts;
+using Permify.Client.Exceptions;
+using Permify.Client.Http.Exceptions;
 using Permify.Client.Http.Generated;
 using Permify.Client.Http.Generated.Models.Schema;
 using Permify.Client.Http.Generated.V1.Tenants.Item.Schemas;
@@ -26,31 +28,47 @@ internal sealed class HttpSchemaService(
     public async Task<WriteSchemaResponse> WriteSchemaAsync(WriteSchemaRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await Schemas.Write.PostAsync(new WriteBody { Schema = request.Schema },
-            cancellationToken: cancellationToken);
+        try
+        {
+            var response = await Schemas.Write.PostAsync(new WriteBody { Schema = request.Schema },
+                cancellationToken: cancellationToken);
 
-        // TODO: handle nullability.
-        return new WriteSchemaResponse(response!.SchemaVersion!);
+            // TODO: handle nullability.
+            return new WriteSchemaResponse(response!.SchemaVersion!);
+        }
+        catch (Permify.Client.Http.Generated.Models.Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
     }
 
     /// <inheritdoc />
     public async Task<ListSchemaResponse> ListSchemaAsync(ListSchemaRequest request,
         CancellationToken cancellationToken)
     {
-        var response = await Schemas.List
-            .PostAsync(new ListBody { PageSize = request.PageSize, ContinuousToken = request.ContinuousToken },
-                cancellationToken: cancellationToken);
+        try
+        {
+            var response = await Schemas.List
+                .PostAsync(new ListBody { PageSize = request.PageSize, ContinuousToken = request.ContinuousToken },
+                    cancellationToken: cancellationToken);
 
-        // TODO: handle nullability.
-        return new ListSchemaResponse(
-            response!.Head!,
-            response!.Schemas!.Select(item =>
-                new ListSchemaResponse.SchemaItem(item.Version!, DateTimeOffset.ParseExact(
-                    item.CreatedAt!,
-                    "yyyy-MM-dd HH:mm:ss zzz 'UTC'",
-                    CultureInfo.InvariantCulture
-                ))).ToList(),
-            response!.ContinuousToken!
-        );
+            // TODO: handle nullability.
+            return new ListSchemaResponse(
+                response!.Head!,
+                response!.Schemas!.Select(item =>
+                    new ListSchemaResponse.SchemaItem(item.Version!, DateTimeOffset.ParseExact(
+                        item.CreatedAt!,
+                        "yyyy-MM-dd HH:mm:ss zzz 'UTC'",
+                        CultureInfo.InvariantCulture
+                    ))).ToList(),
+                response!.ContinuousToken!
+            );
+        }
+        catch (Permify.Client.Http.Generated.Models.Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
     }
 }
