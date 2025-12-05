@@ -63,8 +63,11 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         }
     }
 
-    [Fact]
-    public async Task Schema_Service_Can_List_After_Write()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public async Task Schema_Service_Can_List_After_Write(int amountOfWrites)
     {
         // Arrange
         var cancellationToken = CancellationToken.None;
@@ -73,17 +76,21 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         {
             // Act
             var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
-            var response = await schemaService.WriteSchemaAsync(
-                new WriteSchemaRequest(
-                    Schema: "entity user {}"
-                ),
-                cancellationToken
-            );
+            for (int i = 0; i < amountOfWrites; i++)
+            {
+                await schemaService.WriteSchemaAsync(
+                    new WriteSchemaRequest(
+                        Schema: "entity user {}"
+                    ),
+                    cancellationToken
+                );
+            }
 
-            await schemaService.ListSchemaAsync(new(), cancellationToken);
+            var response = await schemaService.ListSchemaAsync(new(), cancellationToken);
 
             // Assert
             Assert.NotNull(response);
+            Assert.Equal(amountOfWrites, response.Schemas.Count);
         }
     }
 
