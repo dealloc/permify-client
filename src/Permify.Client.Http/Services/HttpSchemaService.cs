@@ -3,7 +3,6 @@ using System.Globalization;
 using Microsoft.Extensions.Options;
 
 using Permify.Client.Contracts;
-using Permify.Client.Exceptions;
 using Permify.Client.Http.Exceptions;
 using Permify.Client.Http.Generated;
 using Permify.Client.Http.Generated.Models.Schema;

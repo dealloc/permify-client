@@ -50,8 +50,10 @@ internal static class ThrowHelper
     /// <exception cref="PermifyAuthenticationException">Thrown for <see cref="StatusCode.Unauthenticated" />.</exception>
     /// <exception cref="PermifyInternalException">Thrown for <see cref="StatusCode.Internal" />.</exception>
     /// <seealso cref="ShouldCatchException" />
+#if NET5_0_OR_GREATER
     [StackTraceHidden, DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
     public static void ThrowPermifyClientException(RpcException exception)
     {
         switch (exception.StatusCode)

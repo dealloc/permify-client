@@ -43,8 +43,19 @@ internal static class ThrowHelper
         _ => false
     };
 
+    /// <summary>
+    /// Converts an HTTP exception into a <see cref="PermifyClientException" />.
+    /// If the exception cannot be converted, it will be rethrown as-is.
+    /// </summary>
+    /// <param name="exception">The <see cref="Status" /> too convert.</param>
+    /// <exception cref="PermifyValidationException">Thrown for code <c>3</c>.</exception>
+    /// <exception cref="PermifyNotFoundException">Thrown for code <c>5</c>.</exception>
+    /// <exception cref="PermifyInternalException">Thrown for code <c>13</c>.</exception>
+    /// <exception cref="PermifyAuthenticationException">Thrown for code <c>16</c>.</exception>
+#if NET5_0_OR_GREATER
     [StackTraceHidden, DoesNotReturn]
     [MethodImpl(MethodImplOptions.NoInlining)]
+#endif
     public static void ThrowPermifyClientException(Status exception)
     {
         switch (exception.Code)

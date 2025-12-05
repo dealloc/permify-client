@@ -19,6 +19,16 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to register the services in.</param>
     /// <param name="configuration">The configuration to bind from.</param>
+    /// <remarks>
+    /// This method is AOT-compatible through the configuration binding source generator
+    /// enabled via EnableConfigurationBindingGenerator in Directory.Build.targets.
+    /// </remarks>
+#if NET5_0_OR_GREATER
+    [UnconditionalSuppressMessage("AOT", "IL3050:RequiresDynamicCode",
+        Justification = "Configuration binding is handled by source generator when EnableConfigurationBindingGenerator is enabled")]
+    [UnconditionalSuppressMessage("Trimming", "IL2026:RequiresUnreferencedCode",
+        Justification = "Configuration binding is handled by source generator when EnableConfigurationBindingGenerator is enabled")]
+#endif
     public static IServiceCollection AddPermifyCore(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IValidateOptions<PermifyOptions>, ValidatePermifyOptions>();
