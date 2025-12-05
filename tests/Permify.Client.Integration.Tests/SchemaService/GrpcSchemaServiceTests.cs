@@ -1,4 +1,4 @@
-namespace Permify.Client.Integration.Tests.Schemas;
+namespace Permify.Client.Integration.Tests.SchemaService;
 
 /// <summary>
 /// Tests for ISchemaService using gRPC protocol implementation.
