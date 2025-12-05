@@ -1,13 +1,14 @@
 # Permify .NET Client
 
-Unofficial .NET client for [Permify](https://permify.co) with support for both HTTP and gRPC APIs. Designed for AOT compatibility with optional Aspire integration.
+Unofficial .NET client for [Permify](https://permify.co) with support for both HTTP and gRPC APIs.
+Designed for AOT compatibility with optional Aspire integration.
 
 ## Features
 
 - HTTP and gRPC API support
 - 100% Native AOT compatible
 - Optional Aspire integration
-- Modern .NET (net10.0+)
+- Modern .NET with maximum compatibility (.NET 10, .NET 9, .NET 8, netstandard2.0)
 
 ## Documentation
 
@@ -42,3 +43,4 @@ This is the current roadmap for the unofficial Permify client, in no particular 
 - [ ] Authn support for Permify servers that require it
 - [ ] Aspire integration
   - [ ] Service Discovery support
+- [ ] Benchmarks & integration tests

@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/PermifyClient.Benchmarks/PermifyClient.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/examples/" />
   <Folder Name="/examples/aspire/">
     <Project Path="examples/aspire/Permify.Client.AotExample/Permify.Client.AotExample.csproj" />
