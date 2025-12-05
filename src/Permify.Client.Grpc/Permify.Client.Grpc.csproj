@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Riok.Mapperly" Version="4.3.0" />
     <Protobuf Include="protos/**/*.proto" GrpcServices="Client" ProtoRoot="protos/" />
     <PackageReference Include="Google.Protobuf" Version="3.33.1" />
     <PackageReference Include="Grpc.Net.ClientFactory" Version="2.71.0" />

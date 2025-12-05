@@ -1,5 +1,3 @@
-using System.Globalization;
-
 using Base.V1;
 
 using Grpc.Core;
@@ -7,8 +5,8 @@ using Grpc.Core;
 using Microsoft.Extensions.Options;
 
 using Permify.Client.Contracts;
-using Permify.Client.Exceptions;
 using Permify.Client.Grpc.Exceptions;
+using Permify.Client.Grpc.Mappers;
 using Permify.Client.Models.Schema;
 using Permify.Client.Options;
 
@@ -28,11 +26,12 @@ public sealed class GrpcSchemaService(
     {
         try
         {
-            var response = await client.WriteAsync(
+            // ResponseAsync is nullable by gRPC design, but only null if call fails (which throws RpcException)
+            var response = (await client.WriteAsync(
                 new SchemaWriteRequest { TenantId = options.Value.TenantId, Schema = request.Schema },
-                cancellationToken: cancellationToken).ResponseAsync;
+                cancellationToken: cancellationToken).ResponseAsync)!;
 
-            return new WriteSchemaResponse(response.SchemaVersion);
+            return SchemaServiceMapper.MapWriteResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {
@@ -47,25 +46,16 @@ public sealed class GrpcSchemaService(
     {
         try
         {
-            var response = await client.ListAsync(new SchemaListRequest
+            // ResponseAsync is nullable by gRPC design, but only null if call fails (which throws RpcException)
+            var response = (await client.ListAsync(new SchemaListRequest
             {
                 TenantId = options.Value.TenantId,
                 PageSize = (uint)request.PageSize,
                 ContinuousToken =
                     request.ContinuousToken ?? string.Empty // gRPC doesn't use null, so we pass an empty string.
-            }).ResponseAsync;
+            }).ResponseAsync)!;
 
-            return new ListSchemaResponse(
-                response.Head,
-                response.Schemas
-                    .Select(item => new ListSchemaResponse.SchemaItem(item.Version, DateTimeOffset.ParseExact(
-                        item.CreatedAt,
-                        "yyyy-MM-dd HH:mm:ss zzz 'UTC'",
-                        CultureInfo.InvariantCulture
-                    )))
-                    .ToList(),
-                response.ContinuousToken
-            );
+            return SchemaServiceMapper.MapListResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {
