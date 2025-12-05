@@ -107,4 +107,106 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         await Assert.ThrowsAsync<PermifyNotFoundException>(async () =>
             await schemaService.ListSchemaAsync(new(), cancellationToken));
     }
+
+    [Fact]
+    public async Task Schema_Service_Can_Partial_Write()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using DistributedApplication _ = app;
+
+        // Act
+        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        await schemaService.WriteSchemaAsync(
+            new WriteSchemaRequest(
+                Schema: schema
+            ),
+            cancellationToken
+        );
+
+        var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
+            null,
+            new()
+            {
+                ["organization"] = new([
+                    "relation new_field @user"
+                ], [], [])
+            }
+        ), cancellationToken);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response.SchemaVersion);
+    }
+
+    [Fact]
+    public async Task Schema_Service_Can_Partial_Delete()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using DistributedApplication _ = app;
+
+        // Act
+        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        await schemaService.WriteSchemaAsync(
+            new WriteSchemaRequest(
+                Schema: schema
+            ),
+            cancellationToken
+        );
+
+        var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
+            null,
+            new()
+            {
+                ["organization"] = new([], [
+                    "owner"
+                ], [])
+            }
+        ), cancellationToken);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response.SchemaVersion);
+    }
+
+    [Fact]
+    public async Task Schema_Service_Can_Partial_Update()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using DistributedApplication _ = app;
+
+        // Act
+        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        await schemaService.WriteSchemaAsync(
+            new WriteSchemaRequest(
+                Schema: schema
+            ),
+            cancellationToken
+        );
+
+        var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
+            null,
+            new()
+            {
+                ["organization"] = new([], [], [
+                    "action manage = admin or member"
+                ])
+            }
+        ), cancellationToken);
+
+        // Assert
+        Assert.NotNull(response);
+        Assert.NotEmpty(response.SchemaVersion);
+    }
 }

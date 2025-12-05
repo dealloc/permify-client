@@ -1,5 +1,7 @@
 using Base.V1;
 
+using Google.Protobuf.Collections;
+
 using Grpc.Core;
 
 using Microsoft.Extensions.Options;
@@ -56,6 +58,41 @@ public sealed class GrpcSchemaService(
             }).ResponseAsync)!;
 
             return SchemaServiceMapper.MapListResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<PartialSchemaUpdateResponse> PartialUpdateSchemaAsync(PartialSchemaUpdateRequest request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await client.PartialWriteAsync(new SchemaPartialWriteRequest
+            {
+                TenantId = options.Value.TenantId,
+                Metadata = new SchemaPartialWriteRequestMetadata
+                {
+                    SchemaVersion = request.Metadata?.SchemaVersion ?? string.Empty
+                },
+                Partials =
+                {
+                    request.Partials.ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => new Partials
+                        {
+                            Write = { kvp.Value.Write },
+                            Delete = { kvp.Value.Delete },
+                            Update = { kvp.Value.Update }
+                        }
+                    )
+                }
+            }, cancellationToken: cancellationToken);
+
+            return SchemaServiceMapper.MapPartialUpdateResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {

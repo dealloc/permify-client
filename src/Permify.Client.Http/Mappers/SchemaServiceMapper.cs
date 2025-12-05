@@ -24,4 +24,9 @@ internal static partial class SchemaServiceMapper
     /// Maps a Kiota SchemaListResponse to domain ListSchemaResponse.
     /// </summary>
     public static partial ListSchemaResponse MapListResponse(SchemaListResponse response);
+
+    /// <summary>
+    /// Maps a Kiota SchemaPartialWriteResponse to domain PartialSchemaUpdateResponse.
+    /// </summary>
+    public static partial PartialSchemaUpdateResponse MapPartialWriteResponse(SchemaPartialWriteResponse response);
 }

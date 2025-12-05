@@ -25,4 +25,15 @@ public interface ISchemaService
     /// <returns>The <see cref="ListSchemaResponse" /> returned by the schema service.</returns>
     /// <exception cref="PermifyClientException">If Permify returns an error while attempting to list the schema.</exception>
     Task<ListSchemaResponse> ListSchemaAsync(ListSchemaRequest request, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Allows authorized users to make partial updates to the schema by adding or modifying actions within individual entities.
+    /// </summary>
+    /// <param name="request">The <see cref="PartialSchemaUpdateRequest" /> containing the actions to execute.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <returns></returns>
+    Task<PartialSchemaUpdateResponse> PartialUpdateSchemaAsync(
+        PartialSchemaUpdateRequest request,
+        CancellationToken cancellationToken
+    );
 }

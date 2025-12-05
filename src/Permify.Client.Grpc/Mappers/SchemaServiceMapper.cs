@@ -24,4 +24,9 @@ internal static partial class SchemaServiceMapper
     /// Maps a gRPC SchemaListResponse to domain ListSchemaResponse.
     /// </summary>
     public static partial ListSchemaResponse MapListResponse(SchemaListResponse response);
+
+    /// <summary>
+    /// Maps a gRPC SchemaPartialWriteResponse to domain PartialSchemaUpdateResponse.
+    /// </summary>
+    public static partial PartialSchemaUpdateResponse MapPartialUpdateResponse(SchemaPartialWriteResponse response);
 }
