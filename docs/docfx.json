@@ -4,13 +4,14 @@
     {
       "src": [
         {
-          "src": "./src",
+          "src": "..",
           "files": [
-            "**/*.csproj"
+            "src/**/*.csproj"
           ]
         }
       ],
-      "dest": "api"
+      "dest": "api",
+      "filter": "filterConfig.yml"
     }
   ],
   "build": {
@@ -34,12 +35,17 @@
     "output": "_site",
     "template": [
       "default",
-      "modern"
+      "modern",
+      "templates/permify"
     ],
     "globalMetadata": {
       "_appName": "Permify-Client",
-      "_appTitle": "Permify-Client",
+      "_appLogoPath": "images/logo.svg",
       "_enableSearch": true,
+      "_enableNewTab": true,
+      "_disableContribution": false,
+      "_disableTocFilter": false,
+      "_disableBreadcrumb": false,
       "pdf": true
     }
   }

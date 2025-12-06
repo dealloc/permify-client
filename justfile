@@ -11,6 +11,7 @@ format:
 benchmark:
     dotnet run -c Release --project ./benchmarks/PermifyClient.Benchmarks
 
+[working-directory: 'docs']
 docs:
     dotnet docfx --serve
 

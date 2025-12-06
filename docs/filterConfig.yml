@@ -1,0 +1,6 @@
+### YamlMime:ManagedReference
+apiRules:
+- include:
+    uidRegex: ^Permify\.Client
+- exclude:
+    uidRegex: .*
