@@ -13,7 +13,6 @@ public interface ISchemaService
     /// </summary>
     /// <param name="request">The <see cref="WriteSchemaRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
-    /// <returns>The <see cref="WriteSchemaResponse" /> returned by the schema service.</returns>
     /// <exception cref="PermifyClientException">If Permify returns an error while attempting to write the schema.</exception>
     Task<WriteSchemaResponse> WriteSchemaAsync(WriteSchemaRequest request, CancellationToken cancellationToken);
 
@@ -22,7 +21,6 @@ public interface ISchemaService
     /// </summary>
     /// <param name="request">The <see cref="ListSchemaRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
-    /// <returns>The <see cref="ListSchemaResponse" /> returned by the schema service.</returns>
     /// <exception cref="PermifyClientException">If Permify returns an error while attempting to list the schema.</exception>
     Task<ListSchemaResponse> ListSchemaAsync(ListSchemaRequest request, CancellationToken cancellationToken);
 
@@ -31,7 +29,7 @@ public interface ISchemaService
     /// </summary>
     /// <param name="request">The <see cref="PartialSchemaUpdateRequest" /> containing the actions to execute.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
-    /// <returns></returns>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to update the schema.</exception>
     Task<PartialSchemaUpdateResponse> PartialUpdateSchemaAsync(
         PartialSchemaUpdateRequest request,
         CancellationToken cancellationToken
