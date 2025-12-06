@@ -1,9 +1,8 @@
 using Permify.Client.Http.Generated.Models;
 using Permify.Client.Mappers;
+using Permify.Client.Models.Schema;
 
 using Riok.Mapperly.Abstractions;
-
-using Permify.Client.Models.Schema;
 
 namespace Permify.Client.Http.Mappers;
 

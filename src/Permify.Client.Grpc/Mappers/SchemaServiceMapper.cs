@@ -1,10 +1,9 @@
 using Base.V1;
 
 using Permify.Client.Mappers;
+using Permify.Client.Models.Schema;
 
 using Riok.Mapperly.Abstractions;
-
-using Permify.Client.Models.Schema;
 
 namespace Permify.Client.Grpc.Mappers;
 

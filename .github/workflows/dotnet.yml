@@ -5,6 +5,7 @@ name: .NET CI
 
 permissions:
   contents: read
+  checks: write
 
 on:
   push:
@@ -13,7 +14,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  format:
+    name: Format Check
     runs-on: ubuntu-latest
 
     steps:
@@ -27,11 +29,64 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build --no-restore
-
       - name: Format
         run: dotnet format --verify-no-changes --exclude examples
 
+  build:
+    name: Build (${{ matrix.framework }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        framework: [net10.0, net9.0, net8.0, netstandard2.0]
+        include:
+          - framework: net10.0
+            dotnet-version: '10.0.x'
+          - framework: net9.0
+            dotnet-version: '9.0.x'
+          - framework: net8.0
+            dotnet-version: '8.0.x'
+          - framework: netstandard2.0
+            dotnet-version: '8.0.x'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build Core library
+        run: dotnet build ./src/Permify.Client/Permify.Client.csproj --no-restore --configuration Release --framework ${{ matrix.framework }}
+
+      - name: Build gRPC library
+        run: dotnet build ./src/Permify.Client.Grpc/Permify.Client.Grpc.csproj --no-restore --configuration Release --framework ${{ matrix.framework }}
+
+      - name: Build HTTP library
+        run: dotnet build ./src/Permify.Client.Http/Permify.Client.Http.csproj --no-restore --configuration Release --framework ${{ matrix.framework }}
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --report-xunit-html --report-xunit-trx
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: (!cancelled())
+        with:
+          files: |
+            tests/**/*.trx

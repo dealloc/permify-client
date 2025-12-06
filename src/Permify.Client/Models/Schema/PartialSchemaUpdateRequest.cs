@@ -8,7 +8,8 @@ namespace Permify.Client.Models.Schema;
 public sealed record PartialSchemaUpdateRequest(
     PartialSchemaUpdateRequest.RequestMetadata? Metadata,
     Dictionary<string, PartialSchemaUpdateRequest.SchemaPartials> Partials
-) {
+)
+{
     /// <summary>
     /// Represents metadata that can be passed into <see cref="PartialSchemaUpdateRequest" />.
     /// </summary>
