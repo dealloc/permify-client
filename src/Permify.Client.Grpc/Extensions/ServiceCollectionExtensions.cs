@@ -21,6 +21,9 @@ public static class ServiceCollectionExtensions
         services.AddGrpcClient<Schema.SchemaClient>(options => options.Address = new Uri(baseUrl));
         services.AddScoped<ISchemaService, GrpcSchemaService>();
 
+        services.AddGrpcClient<Tenancy.TenancyClient>(options => options.Address = new Uri(baseUrl));
+        services.AddScoped<ITenancyService, GrpcTenantService>();
+
         return services;
     }
 }

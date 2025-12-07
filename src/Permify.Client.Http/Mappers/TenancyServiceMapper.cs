@@ -1,0 +1,17 @@
+using Permify.Client.Http.Generated.Models;
+using Permify.Client.Mappers;
+using Permify.Client.Models.Tenancy;
+
+using Riok.Mapperly.Abstractions;
+
+namespace Permify.Client.Http.Mappers;
+
+/// <summary>
+/// Maps gRPC Tenancy responses to domain models.
+/// </summary>
+[UseStaticMapper(typeof(DateTimeOffsetMapper))]
+[Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]
+internal static partial class TenancyServiceMapper
+{
+    public static partial CreateTenantResponse MapCreateTenantResponse(TenantCreateResponse response);
+}
