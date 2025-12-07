@@ -1,7 +1,9 @@
+using Permify.Client.Contracts;
+
 namespace Permify.Client.Models.Schema;
 
 /// <summary>
-/// Represents the response of a <see cref="ListSchemaRequest" />.
+/// Response for <see cref="ISchemaService.ListSchemaAsync" />
 /// </summary>
 /// <param name="Head">The latest version available for the tenant.</param>
 /// <param name="Schemas">A list of schema versions with their corresponding creation timestamps.</param>

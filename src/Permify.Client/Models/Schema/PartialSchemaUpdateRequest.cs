@@ -1,7 +1,9 @@
+using Permify.Client.Contracts;
+
 namespace Permify.Client.Models.Schema;
 
 /// <summary>
-/// This endpoint allows authorized users to make partial updates to the schema by adding or modifying actions within individual entities.
+/// Request for <see cref="ISchemaService.PartialUpdateSchemaAsync" />
 /// </summary>
 /// <param name="Metadata">Optional metadata to pass along the request.</param>
 /// <param name="Partials">A list of entities and their operations.</param>
@@ -19,9 +21,13 @@ public sealed record PartialSchemaUpdateRequest(
     /// <summary>
     /// Contains partials to write, delete, and update an existing schema.
     /// </summary>
-    /// <param name="Write">The new properties to write into the entity.</param>
-    /// <param name="Delete">The properties to delete from the entity.</param>
-    /// <param name="Update">The properties to update from the entity.</param>
+    /// <param name="Write">Conditions to be added. If a relation or permission/action already exists, it should return an error.</param>
+    /// <param name="Delete">
+    /// Names (permissions/actions) to be deleted.
+    /// If the relation/permission/action name does not exist, it should return an error.
+    /// Note: specifying the name is enough as relation/permission/action names should be unique.
+    /// </param>
+    /// <param name="Update">Conditions to be updated.</param>
     public sealed record SchemaPartials(
         List<string> Write,
         List<string> Delete,

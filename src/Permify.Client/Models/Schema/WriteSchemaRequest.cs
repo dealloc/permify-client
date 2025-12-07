@@ -1,7 +1,9 @@
+using Permify.Client.Contracts;
+
 namespace Permify.Client.Models.Schema;
 
 /// <summary>
-/// Overwrites the Permify schema with a new version.
+/// Request for <see cref="ISchemaService.WriteSchemaAsync" />
 /// </summary>
 /// <param name="Schema">The Permify schema as a string.</param>
 public record WriteSchemaRequest(
