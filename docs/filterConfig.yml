@@ -1,6 +1,10 @@
 ### YamlMime:ManagedReference
 apiRules:
-- include:
-    uidRegex: ^Permify\.Client
 - exclude:
-    uidRegex: .*
+    uidRegex: Validate*
+- exclude:
+    uidRegex: ^Google*
+- exclude:
+    uidRegex: ^Base*
+- exclude:
+    uidRegex: ^Grpc*

@@ -54,6 +54,10 @@ jobs:
         working-directory: ./docs
         run: dotnet docfx build
 
+      - name: Build documentation PDF
+        working-directory: ./docs
+        run: dotnet docfx pdf
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
