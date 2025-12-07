@@ -15,4 +15,6 @@ namespace Permify.Client.Grpc.Mappers;
 internal static partial class TenancyServiceMapper
 {
     public static partial CreateTenantResponse MapCreateTenantResponse(TenantCreateResponse response);
+
+    public static partial ListTenantResponse MapListTenantResponse(TenantListResponse response);
 }

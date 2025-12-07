@@ -17,4 +17,11 @@ public interface ITenancyService
     /// <param name="request">The <see cref="CreateTenantRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
     Task<CreateTenantResponse> CreateTenantAsync(CreateTenantRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets (a paginated) list of all tenants.
+    /// </summary>
+    /// <param name="request">The <see cref="ListTenantRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    Task<ListTenantResponse> ListTenantsAsync(ListTenantRequest request, CancellationToken cancellationToken = default);
 }

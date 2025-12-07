@@ -35,4 +35,31 @@ internal sealed class HttpTenancyService(ApiClient api) : ITenancyService
             throw;
         }
     }
+
+    public async Task<ListTenantResponse> ListTenantsAsync(
+        ListTenantRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await api.V1.Tenants.List.PostAsync(
+                new TenantListRequest
+                {
+                    PageSize = request.PageSize,
+                    ContinuousToken = request.ContinuousToken
+                },
+                cancellationToken: cancellationToken);
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return TenancyServiceMapper.MapListTenantResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }
