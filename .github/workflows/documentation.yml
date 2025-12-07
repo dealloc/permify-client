@@ -46,6 +46,10 @@ jobs:
       - name: Build solution
         run: dotnet build --no-restore
 
+      - name: Build documentation metadata
+        working-directory: ./docs
+        run: dotnet docfx metadata
+
       - name: Build documentation
         working-directory: ./docs
         run: dotnet docfx build
