@@ -11,7 +11,10 @@
         }
       ],
       "dest": "api",
-      "filter": "filterConfig.yml"
+      "filter": "filterConfig.yml",
+      "namespaceLayout": "nested",
+      "includePrivateMembers": true,
+      "includeExplicitInterfaceImplementations": true
     }
   ],
   "build": {
