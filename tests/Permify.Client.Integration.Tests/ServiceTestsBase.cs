@@ -9,7 +9,7 @@ namespace Permify.Client.Integration.Tests;
 /// </summary>
 public abstract class ServiceTestsBase(string endpointName)
 {
-    protected static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(1);
 
     /// <summary>
     /// Configures the Permify clients for the specific protocol (HTTP or gRPC).

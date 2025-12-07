@@ -6,15 +6,19 @@ using Permify.Client.Models.Tenancy;
 
 namespace Permify.Client.Integration.Tests.TenancyService;
 
+/// <summary>
+/// Abstract base class for testing <see cref="ITenancyService" /> implementations.
+/// Contains all test logic that applies to both HTTP and gRPC implementations.
+/// </summary>
+[Timeout(1 * 60 * 1000)]
 public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTestsBase(endpointName)
 {
-    [Theory]
-    [InlineData("valid-id", "Valid Name")]
-    [InlineData("v", "Valid Name")]
-    public async Task Tenancy_Service_Can_Create(string id, string name)
+    [Test]
+    [Arguments("v", "Valid Name")]
+    [Arguments("valid-id", "Valid Name")]
+    public async Task Tenancy_Service_Can_Create(string id, string name, CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -26,19 +30,18 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
         );
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(response.Tenant.Id, id);
-        Assert.Equal(response.Tenant.Name, name);
-        Assert.Equal(response.Tenant.CreatedAt.Date, DateTime.UtcNow.Date);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Tenant.Id).IsEqualTo(id);
+        await Assert.That(response.Tenant.Name).IsEqualTo(name);
+        await Assert.That(response.Tenant.CreatedAt.Date).IsEqualTo(DateTime.UtcNow.Date);
     }
 
-    [Theory]
-    [InlineData("", "Inalid Name")]
-    [InlineData("$", "Invalid Name")]
-    public async Task Tenancy_Service_Cannot_Create_Invalid(string id, string name)
+    [Test]
+    [Arguments("", "Inalid Name")]
+    [Arguments("$", "Invalid Name")]
+    public async Task Tenancy_Service_Cannot_Create_Invalid(string id, string name, CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -52,11 +55,10 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
         ));
     }
 
-    [Fact]
-    public async Task TenancyService_Can_List_Empty()
+    [Test]
+    public async Task Tenancy_Service_Can_List_Empty(CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -68,20 +70,26 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
         );
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Empty(response.ContinuousToken);
-        Assert.Empty(response.Tenants);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.ContinuousToken).IsEmpty();
+        await Assert.That(response.Tenants).IsEmpty();
     }
 
-    [Theory]
-    [InlineData(20, 1, 1, true)]
-    [InlineData(20, 10, 10, true)]
-    [InlineData(10, 10, 10, false)]
-    [InlineData(10, 11, 10, false)]
-    public async Task TenancyService_Can_List(uint amountOfTenants, uint pageSize, int amountReturned, bool hasMore)
+    [Test]
+    [Arguments(20, 1, 1, true)]
+    [Arguments(20, 10, 10, true)]
+    [Arguments(10, 10, 10, false)]
+    [Arguments(10, 11, 10, false)]
+    [DependsOn(nameof(Tenancy_Service_Can_Create))]
+    public async Task Tenancy_Service_Can_List(
+        uint amountOfTenants,
+        uint pageSize,
+        int amountReturned,
+        bool hasMore,
+        CancellationToken cancellationToken
+    )
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -98,8 +106,8 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
         var response = await tenancyService.ListTenantsAsync(new(pageSize), cancellationToken);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(hasMore, !string.IsNullOrEmpty(response.ContinuousToken));
-        Assert.Equal(amountReturned, response.Tenants.Count);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(string.IsNullOrWhiteSpace(response.ContinuousToken)).IsEqualTo(!hasMore);
+        await Assert.That(response.Tenants.Count).IsEqualTo(amountReturned);
     }
 }

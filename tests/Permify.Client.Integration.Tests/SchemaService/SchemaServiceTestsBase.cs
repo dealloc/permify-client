@@ -10,16 +10,16 @@ using Permify.Client.Models.Schema;
 namespace Permify.Client.Integration.Tests.SchemaService;
 
 /// <summary>
-/// Abstract base class for testing ISchemaService implementations.
+/// Abstract base class for testing <see cref="ISchemaService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
+[Timeout(1 * 60 * 1000)]
 public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTestsBase(endpointName)
 {
-    [Theory, MemberData(nameof(SchemaHelper.GetAllValidSchemas), MemberType = typeof(SchemaHelper))]
-    public async Task Schema_Service_Can_Write(string schemaFile)
+    [Test, MethodDataSource(typeof(SchemaHelper), nameof(SchemaHelper.GetAllValidSchemas))]
+    public async Task Schema_Service_Can_Write(string schemaFile, CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -34,42 +34,41 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         );
 
         // Assert
-        Assert.NotNull(response);
+        await Assert.That(response).IsNotNull();
     }
 
-    [Theory, MemberData(nameof(SchemaHelper.GetAllInvalidSchemas), MemberType = typeof(SchemaHelper))]
-    public async Task Schema_Service_Cannot_Write_Invalid_Schema(string schemaFile)
+    [Test, MethodDataSource(typeof(SchemaHelper), nameof(SchemaHelper.GetAllInvalidSchemas))]
+    public async Task Schema_Service_Cannot_Write_Invalid_Schema(string schemaFile, CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
         // Act
         var schema = await SchemaHelper.LoadSchemaAsync(schemaFile, cancellationToken);
         var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
-        await Assert.ThrowsAsync<PermifyInternalException>(async () =>
-            {
-                await schemaService.WriteSchemaAsync(
-                    new WriteSchemaRequest(
-                        Schema: schema
-                    ),
-                    cancellationToken
-                );
-            },
-            exception => Regex.IsMatch(exception.Message, "^[0-9]+:[0-9]+")
-                ? null
-                : "Thrown exception does not resemble error");
+
+        // Assert
+        var exception = await Assert.ThrowsAsync<PermifyInternalException>(async () =>
+        {
+            await schemaService.WriteSchemaAsync(
+                new WriteSchemaRequest(
+                    Schema: schema
+                ),
+                cancellationToken
+            );
+        });
+
+        await Assert.That(exception?.Message).Matches("^[0-9]+:[0-9]+");
     }
 
-    [Theory]
-    [InlineData(1)]
-    [InlineData(2)]
-    [InlineData(3)]
-    public async Task Schema_Service_Can_List_After_Write(int amountOfWrites)
+    [Test, DependsOn(nameof(Schema_Service_Can_Write))]
+    [Arguments(1)]
+    [Arguments(2)]
+    [Arguments(3)]
+    public async Task Schema_Service_Can_List_After_Write(int amountOfWrites, CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -88,15 +87,14 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         var response = await schemaService.ListSchemaAsync(new(), cancellationToken);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.Equal(amountOfWrites, response.Schemas.Count);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Schemas.Count).IsEqualTo(amountOfWrites);
     }
 
-    [Fact]
-    public async Task Schema_Service_Cannot_List_Before_Write()
+    [Test]
+    public async Task Schema_Service_Cannot_List_Before_Write(CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
 
@@ -108,12 +106,10 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             await schemaService.ListSchemaAsync(new(), cancellationToken));
     }
 
-    [Fact]
-    public async Task Schema_Service_Can_Partial_Write()
+    [Test, DependsOn(nameof(Schema_Service_Can_Write))]
+    public async Task Schema_Service_Can_Partial_Write(CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
-
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
@@ -138,16 +134,14 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         ), cancellationToken);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.NotEmpty(response.SchemaVersion);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.SchemaVersion).IsNotEmpty();
     }
 
-    [Fact]
-    public async Task Schema_Service_Can_Partial_Delete()
+    [Test, DependsOn(nameof(Schema_Service_Can_Write))]
+    public async Task Schema_Service_Can_Partial_Delete(CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
-
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
@@ -172,16 +166,14 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         ), cancellationToken);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.NotEmpty(response.SchemaVersion);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.SchemaVersion).IsNotEmpty();
     }
 
-    [Fact]
-    public async Task Schema_Service_Can_Partial_Update()
+    [Test, DependsOn(nameof(Schema_Service_Can_Write))]
+    public async Task Schema_Service_Can_Partial_Update(CancellationToken cancellationToken)
     {
         // Arrange
-        var cancellationToken = CancellationToken.None;
-
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
         var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
         await using DistributedApplication _ = app;
@@ -206,7 +198,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
         ), cancellationToken);
 
         // Assert
-        Assert.NotNull(response);
-        Assert.NotEmpty(response.SchemaVersion);
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.SchemaVersion).IsNotEmpty();
     }
 }
