@@ -36,6 +36,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<ISchemaService, HttpSchemaService>();
         services.AddScoped<ITenancyService, HttpTenancyService>();
+        services.AddScoped<IBundleService, HttpBundleService>();
         return services;
     }
 }

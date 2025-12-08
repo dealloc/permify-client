@@ -7,7 +7,7 @@ using Riok.Mapperly.Abstractions;
 namespace Permify.Client.Http.Mappers;
 
 /// <summary>
-/// Maps gRPC Schema responses to domain models.
+/// Maps HTTP Schema responses to domain models.
 /// </summary>
 [UseStaticMapper(typeof(DateTimeOffsetMapper))]
 [Mapper(RequiredMappingStrategy = RequiredMappingStrategy.Target)]

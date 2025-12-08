@@ -24,6 +24,9 @@ public static class ServiceCollectionExtensions
         services.AddGrpcClient<Tenancy.TenancyClient>(options => options.Address = new Uri(baseUrl));
         services.AddScoped<ITenancyService, GrpcTenantService>();
 
+        services.AddGrpcClient<Bundle.BundleClient>(options => options.Address = new Uri(baseUrl));
+        services.AddScoped<IBundleService, GrpcBundleService>();
+
         return services;
     }
 }
