@@ -62,4 +62,31 @@ public sealed class GrpcBundleService(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<ReadBundleResponse> ReadBundleAsync(
+        ReadBundleRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            // ResponseAsync is nullable by gRPC design, but only null if call fails (which throws RpcException)
+            var response = await (client.ReadAsync(
+                new BundleReadRequest
+                {
+                    TenantId = options.Value.TenantId,
+                    Name = request.Name
+                },
+                cancellationToken: cancellationToken
+            ).ResponseAsync)!;
+
+            return BundleServiceMapper.MapToReadBundleResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }

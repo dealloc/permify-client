@@ -17,4 +17,9 @@ internal static partial class BundleServiceMapper
     /// Maps a Kiota WriteBundleResponse to domain BundleWriteResponse.
     /// </summary>
     public static partial WriteBundleResponse MapWriteBundleResponse(BundleWriteResponse response);
+
+    /// <summary>
+    /// Maps a Kiota ReadBundleResponse to domain BundleReadResponse.
+    /// </summary>
+    public static partial ReadBundleResponse MapReadBundleResponse(BundleReadResponse response);
 }

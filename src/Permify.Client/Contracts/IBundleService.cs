@@ -20,4 +20,11 @@ public interface IBundleService
     /// <param name="request">The <see cref="WriteBundleRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
     Task<WriteBundleResponse> WriteBundleAsync(WriteBundleRequest request, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Reads a bundle from Permify.
+    /// </summary>
+    /// <param name="request">The see <see cref="ReadBundleRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    Task<ReadBundleResponse> ReadBundleAsync(ReadBundleRequest request, CancellationToken cancellationToken);
 }

@@ -95,4 +95,82 @@ public abstract class BundleServiceTestsBase
             new(string.Empty, [], []),
         ]), cancellationToken));
     }
+
+    [Test]
+    [DependsOn(nameof(Bundle_Service_Can_Write))]
+    public async Task Bundle_Service_Cannot_Read_Non_Existing(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var name = "bundle 1";
+        var bundleService = Services.GetRequiredService<IBundleService>();
+
+        // Act
+
+        // Assert
+        await Assert.ThrowsExactlyAsync<PermifyNotFoundException>(() =>
+            bundleService.ReadBundleAsync(new(name), cancellationToken));
+    }
+
+    [Test]
+    [DependsOn(nameof(Bundle_Service_Can_Write))]
+    public async Task Bundle_Service_Can_Read(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var name = "bundle 1";
+        var bundleService = Services.GetRequiredService<IBundleService>();
+        await bundleService.WriteBundleAsync(new([
+            new(name, [], [])
+        ]), cancellationToken);
+
+        // Act
+        var response = await bundleService.ReadBundleAsync(new(name), cancellationToken);
+
+        // Assert
+        await Assert.That(response.Bundle).IsNotNull();
+        await Assert.That(response.Bundle.Name).IsEqualTo(name);
+        await Assert.That(response.Bundle.Arguments.Count).IsEqualTo(0);
+        await Assert.That(response.Bundle.Operations.Count).IsEqualTo(0);
+    }
+
+    [Test]
+    [DependsOn(nameof(Bundle_Service_Can_Write_Complex))]
+    public async Task Bundle_Service_Can_Read_Complex(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var name = "bundle 1";
+        var bundleService = Services.GetRequiredService<IBundleService>();
+        await bundleService.WriteBundleAsync(new([
+            new(name, [
+                "creatorID",
+                "organizationID"
+            ], [
+                new(
+                    AttributesWrite:
+                    [
+                        "organization:{{.organizationID}}$public|boolean:false"
+                    ],
+                    AttributesDelete: [],
+                    RelationshipsWrite:
+                    [
+                        "organization:{{.organizationID}}#admin@user:{{.creatorID}}",
+                        "organization:{{.organizationID}}#manager@user:{{.creatorID}}"
+                    ],
+                    RelationshipsDelete: []
+                )
+            ])
+        ]), cancellationToken);
+
+        // Act
+        var response = await bundleService.ReadBundleAsync(new(name), cancellationToken);
+
+        // Assert
+        await Assert.That(response.Bundle).IsNotNull();
+        await Assert.That(response.Bundle.Name).IsEqualTo(name);
+        await Assert.That(response.Bundle.Arguments.Count).IsEqualTo(2);
+        await Assert.That(response.Bundle.Arguments).Contains("creatorID");
+        await Assert.That(response.Bundle.Arguments).Contains("organizationID");
+        await Assert.That(response.Bundle.Operations.Count).IsEqualTo(1);
+        await Assert.That(response.Bundle.Operations[0].AttributesWrite)
+            .Contains("organization:{{.organizationID}}$public|boolean:false");
+    }
 }

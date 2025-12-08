@@ -18,4 +18,9 @@ public static partial class BundleServiceMapper
     /// Maps a gRPC BundleWriteResponse to domain WriteBundleResponse.
     /// </summary>
     public static partial WriteBundleResponse MapToWriteBundleResponse(BundleWriteResponse response);
+
+    /// <summary>
+    /// Maps a gRPC ReadBundleResponse to domain BundleReadResponse.
+    /// </summary>
+    public static partial ReadBundleResponse MapToReadBundleResponse(BundleReadResponse response);
 }

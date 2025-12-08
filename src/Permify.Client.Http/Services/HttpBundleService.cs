@@ -62,4 +62,32 @@ internal sealed class HttpBundleService(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<ReadBundleResponse> ReadBundleAsync(
+        ReadBundleRequest request,
+        CancellationToken cancellationToken
+    )
+    {
+        try
+        {
+            var response = await Bundles.Read.PostAsync(
+                new ReadBody
+                {
+                    Name = request.Name
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return BundleServiceMapper.MapReadBundleResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }
