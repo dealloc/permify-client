@@ -69,7 +69,7 @@ public abstract class TenancyServiceTestsBase
         // Assert
         await Assert.That(response).IsNotNull();
         await Assert.That(response.ContinuousToken).IsEmpty();
-        await Assert.That(response.Tenants).IsEmpty();
+        await Assert.That(response.Tenants.Count).IsEqualTo(0);
     }
 
     [Test]
@@ -126,7 +126,7 @@ public abstract class TenancyServiceTestsBase
         await Assert.That(response.TenantId).IsEqualTo(id);
 
         var list = await tenancyService.ListTenantsAsync(new(5), cancellationToken);
-        await Assert.That(list.Tenants).IsEmpty();
+        await Assert.That(list.Tenants.Count).IsEqualTo(0);
     }
 
     [Test]

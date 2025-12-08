@@ -1,4 +1,5 @@
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Jobs;
 
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
@@ -11,6 +12,9 @@ using Permify.Client.Options;
 
 namespace PermifyClient.Benchmarks.Schema;
 
+[SimpleJob(RuntimeMoniker.Net80)]
+[SimpleJob(RuntimeMoniker.Net90)]
+[SimpleJob(RuntimeMoniker.Net10_0, baseline: true)]
 public class WriteBenchmarks
 {
     public IContainer PermifyContainer = null!;

@@ -7,10 +7,15 @@ namespace Permify.Client.Integration.Tests;
 
 public sealed class PermifyContainer : IAsyncInitializer, IAsyncDisposable
 {
-    public Uri HttpEndpoint => field ??= new Uri($"http://{Container.Hostname}:{Container.GetMappedPublicPort(3476)}");
+    public Uri HttpEndpoint => new Uri($"http://{Container.Hostname}:{Container.GetMappedPublicPort(3476)}");
 
-    public Uri GrpcEndpoint => field ??= new Uri($"http://{Container.Hostname}:{Container.GetMappedPublicPort(3478)}");
+    public Uri GrpcEndpoint => new Uri($"http://{Container.Hostname}:{Container.GetMappedPublicPort(3478)}");
 
+#if NET10_0_OR_GREATER
+#else
+    // Polyfill the `field` keyword for < .NET 10
+    private IContainer? field;
+#endif
     /// <summary>
     /// The Permify container instance.
     /// </summary>
