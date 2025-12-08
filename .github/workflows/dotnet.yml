@@ -70,8 +70,19 @@ jobs:
         run: dotnet build ./src/Permify.Client.Http/Permify.Client.Http.csproj --no-restore --configuration Release --framework ${{ matrix.framework }}
 
   test:
-    name: Test
+    name: Test (${{ matrix.framework }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        framework: [net10.0, net9.0, net8.0]
+        include:
+          - framework: net10.0
+            dotnet-version: '10.0.x'
+          - framework: net9.0
+            dotnet-version: '9.0.x'
+          - framework: net8.0
+            dotnet-version: '8.0.x'
 
     steps:
       - uses: actions/checkout@v4
@@ -79,9 +90,9 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          global-json-file: global.json
+          dotnet-version: ${{ matrix.dotnet-version }}
 
-      - name: Run Tests
+      - name: Run Tests for ${{ matrix.framework }}
         env:
           TUNIT_GITHUB_REPORTER_STYLE: full
-        run: dotnet test --maximum-parallel-tests 10
+        run: dotnet test --framework ${{ matrix.framework }} --maximum-parallel-tests 10
