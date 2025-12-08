@@ -59,7 +59,7 @@ public sealed class GrpcSchemaService(
                 PageSize = (uint)request.PageSize,
                 ContinuousToken =
                     request.ContinuousToken ?? string.Empty // gRPC doesn't use null, so we pass an empty string.
-            }).ResponseAsync)!;
+            }, cancellationToken: cancellationToken).ResponseAsync)!;
 
             return SchemaServiceMapper.MapListResponse(response);
         }
