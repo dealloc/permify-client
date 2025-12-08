@@ -1,9 +1,10 @@
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Http.HttpClientLibrary;
 
-using Permify.Client.Contracts;
+using Permify.Client.Contracts.V1;
 using Permify.Client.Http.Generated;
 using Permify.Client.Http.Services;
+using Permify.Client.Http.Services.V1;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection;

@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-using Permify.Client.Models.Schema;
+using Permify.Client.Models.V1.Schema;
 
 namespace Permify.Client;
 

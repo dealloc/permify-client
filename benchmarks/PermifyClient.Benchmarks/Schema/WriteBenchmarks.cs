@@ -7,7 +7,8 @@ using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.DependencyInjection;
 
 using Permify.Client.Contracts;
-using Permify.Client.Models.Schema;
+using Permify.Client.Contracts.V1;
+using Permify.Client.Models.V1.Schema;
 using Permify.Client.Options;
 
 namespace PermifyClient.Benchmarks.Schema;

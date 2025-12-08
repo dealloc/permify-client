@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using Permify.Client;
 using Permify.Client.Contracts;
+using Permify.Client.Contracts.V1;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.AddServiceDefaults();
