@@ -9,7 +9,7 @@ format:
     dotnet format
 
 benchmark:
-    dotnet run -c Release -f net10.0 --project ./benchmarks/PermifyClient.Benchmarks
+    dotnet run -c Release -f net10.0 --project ./benchmarks/PermifyClient.Benchmarks -- --join --allStats true 
 
 test:
     dotnet test --report-trx --github-reporter-style full
