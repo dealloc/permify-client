@@ -17,7 +17,7 @@ namespace Permify.Client.Grpc.Services;
 /// </summary>
 public sealed class GrpcBundleService(
     IOptions<PermifyOptions> options,
-    Bundle.BundleClient client
+    Base.V1.Bundle.BundleClient client
 ) : IBundleService
 {
     /// <inheritdoc />
@@ -41,7 +41,7 @@ public sealed class GrpcBundleService(
                             Arguments = { bundle.Arguments },
                             Operations =
                             {
-                                bundle.Operations.Select(operation => new Operation
+                                bundle.Operations.Select(operation => new Base.V1.Operation
                                 {
                                     AttributesWrite = { operation.AttributesWrite },
                                     AttributesDelete = { operation.AttributesDelete },
