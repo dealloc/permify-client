@@ -16,7 +16,7 @@ public abstract class SchemaServiceTestsBase
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
     public required PermifyContainer PermifyContainer { get; init; }
     protected abstract IServiceProvider Services { get; set; }
-    
+
     [Test, MethodDataSource(typeof(SchemaHelper), nameof(SchemaHelper.GetAllValidSchemas))]
     public async Task Schema_Service_Can_Write(string schemaFile, CancellationToken cancellationToken)
     {

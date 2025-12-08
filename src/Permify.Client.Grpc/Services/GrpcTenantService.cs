@@ -52,7 +52,8 @@ public sealed class GrpcTenantService(
             var response = await client.ListAsync(
                 new TenantListRequest
                 {
-                    PageSize = request.PageSize, ContinuousToken = request.ContinuousToken ?? string.Empty,
+                    PageSize = request.PageSize,
+                    ContinuousToken = request.ContinuousToken ?? string.Empty,
                 },
                 cancellationToken: cancellationToken
             ).ResponseAsync;
