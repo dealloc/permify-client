@@ -10,14 +10,13 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.8"/>
-    <PackageReference Include="Aspire.Hosting.Testing" Version="13.0.2"/>
+    <PackageReference Include="Testcontainers" Version="4.9.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Permify.Client.Grpc\Permify.Client.Grpc.csproj"/>
     <ProjectReference Include="..\..\src\Permify.Client.Http\Permify.Client.Http.csproj"/>
     <ProjectReference Include="..\..\src\Permify.Client\Permify.Client.csproj"/>
-    <ProjectReference Include="..\..\tests\Permify.Client.Integration.AppHost\Permify.Client.Integration.AppHost.csproj"/>
   </ItemGroup>
 
 </Project>

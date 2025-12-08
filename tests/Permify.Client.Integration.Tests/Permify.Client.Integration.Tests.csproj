@@ -9,22 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.Testing" Version="13.0.2"/>
+    <PackageReference Include="Testcontainers" Version="4.9.0" />
     <PackageReference Include="TUnit" Version="1.5.1"/>
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="System.Net"/>
     <Using Include="Microsoft.Extensions.DependencyInjection"/>
-    <Using Include="Aspire.Hosting.ApplicationModel"/>
-    <Using Include="Aspire.Hosting.Testing"/>
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Permify.Client.Grpc\Permify.Client.Grpc.csproj"/>
     <ProjectReference Include="..\..\src\Permify.Client.Http\Permify.Client.Http.csproj"/>
     <ProjectReference Include="..\..\src\Permify.Client\Permify.Client.csproj"/>
-    <ProjectReference Include="..\Permify.Client.Integration.AppHost\Permify.Client.Integration.AppHost.csproj"/>
   </ItemGroup>
 
 </Project>

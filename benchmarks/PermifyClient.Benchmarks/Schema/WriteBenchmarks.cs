@@ -1,7 +1,7 @@
-using Aspire.Hosting;
-using Aspire.Hosting.Testing;
-
 using BenchmarkDotNet.Attributes;
+
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Containers;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,21 +13,21 @@ namespace PermifyClient.Benchmarks.Schema;
 
 public class WriteBenchmarks
 {
-    public DistributedApplication application = null!;
+    public IContainer PermifyContainer = null!;
     public ServiceProvider provider = null!;
 
     [GlobalSetup]
     public async Task GlobalSetup()
     {
-        var apphost = await DistributedApplicationTestingBuilder
-            .CreateAsync<Projects.Permify_Client_Integration_AppHost>(CancellationToken.None);
+        PermifyContainer = new ContainerBuilder()
+            .WithImage("ghcr.io/permify/permify:v1.5.3")
+            .WithPortBinding(3476, assignRandomHostPort: true)
+            .WithPortBinding(3478, assignRandomHostPort: true)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPath("/healthz").ForPort(3476)))
+            .Build();
 
-        application = await apphost
-            .BuildAsync(CancellationToken.None);
-
-        await application.StartAsync(CancellationToken.None);
-
-        var permifyEndpoint = application.GetEndpoint("permify", "grpc");
+        await PermifyContainer.StartAsync();
+        var permifyEndpoint = new Uri($"http://{PermifyContainer.Hostname}:{PermifyContainer.GetMappedPublicPort(3478)}");
 
         var services = new ServiceCollection();
         services.Configure<PermifyOptions>(options =>
@@ -56,7 +56,7 @@ public class WriteBenchmarks
     [GlobalCleanup]
     public async Task GlobalCleanUp()
     {
-        await application.DisposeAsync();
+        await PermifyContainer.DisposeAsync();
         await provider.DisposeAsync();
     }
 }

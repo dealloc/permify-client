@@ -9,7 +9,6 @@
     <Project Path="examples/aspire/Permify.Client.ServiceDefaults/Permify.Client.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/Permify.Client.Integration.AppHost/Permify.Client.Integration.AppHost.csproj" />
     <Project Path="tests/Permify.Client.Integration.Tests/Permify.Client.Integration.Tests.csproj" />
   </Folder>
   <Project Path="src/Permify.Client.Grpc/Permify.Client.Grpc.csproj" />

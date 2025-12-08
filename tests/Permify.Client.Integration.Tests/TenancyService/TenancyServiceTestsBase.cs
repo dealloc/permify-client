@@ -1,5 +1,3 @@
-using Aspire.Hosting;
-
 using Permify.Client.Contracts;
 using Permify.Client.Exceptions;
 using Permify.Client.Models.Tenancy;
@@ -12,19 +10,21 @@ namespace Permify.Client.Integration.Tests.TenancyService;
 /// </summary>
 [Retry(3)]
 [Timeout(1 * 60 * 1000)]
-public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTestsBase(endpointName)
+public abstract class TenancyServiceTestsBase
 {
+    [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
+    public required PermifyContainer PermifyContainer { get; init; }
+    protected abstract IServiceProvider Services { get; set; }
+
     [Test]
     [Arguments("v", "Valid Name")]
     [Arguments("valid-id", "Valid Name")]
     public async Task Tenancy_Service_Can_Create(string id, string name, CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
 
         // Act
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
         var response = await tenancyService.CreateTenantAsync(
             new CreateTenantRequest(id, name),
             cancellationToken
@@ -43,11 +43,9 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
     public async Task Tenancy_Service_Cannot_Create_Invalid(string id, string name, CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
 
         // Act
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
 
         // Assert
         await Assert.ThrowsAsync<PermifyValidationException>(async () => await tenancyService.CreateTenantAsync(
@@ -60,11 +58,9 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
     public async Task Tenancy_Service_Can_List_Empty(CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
 
         // Act
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
         var response = await tenancyService.ListTenantsAsync(
             new(20),
             cancellationToken
@@ -91,11 +87,7 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
     )
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
-
-        // Act
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
         for (int i = 0; i < amountOfTenants; i++)
         {
             await tenancyService.CreateTenantAsync(
@@ -104,6 +96,7 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
             );
         }
 
+        // Act
         var response = await tenancyService.ListTenantsAsync(new(pageSize), cancellationToken);
 
         // Assert
@@ -118,11 +111,9 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
     public async Task Tenancy_Service_Can_Delete(CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
         var id = Guid.NewGuid().ToString();
         var name = $"name of {id}";
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
         await tenancyService.CreateTenantAsync(
             new CreateTenantRequest(id, name),
             cancellationToken
@@ -142,10 +133,8 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
     public async Task Tenancy_Service_Cannot_Delete_Non_Existing(CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
         var id = Guid.NewGuid().ToString();
-        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
+        var tenancyService = Services.GetRequiredService<ITenancyService>();
 
         // Act
         await tenancyService.CreateTenantAsync(

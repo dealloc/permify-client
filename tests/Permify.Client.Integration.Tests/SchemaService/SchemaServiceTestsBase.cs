@@ -1,7 +1,3 @@
-using System.Text.RegularExpressions;
-
-using Aspire.Hosting;
-
 using Permify.Client.Contracts;
 using Permify.Client.Exceptions;
 using Permify.Client.Integration.Tests.Helpers;
@@ -15,18 +11,20 @@ namespace Permify.Client.Integration.Tests.SchemaService;
 /// </summary>
 [Retry(3)]
 [Timeout(1 * 60 * 1000)]
-public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTestsBase(endpointName)
+public abstract class SchemaServiceTestsBase
 {
+    [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
+    public required PermifyContainer PermifyContainer { get; init; }
+    protected abstract IServiceProvider Services { get; set; }
+    
     [Test, MethodDataSource(typeof(SchemaHelper), nameof(SchemaHelper.GetAllValidSchemas))]
     public async Task Schema_Service_Can_Write(string schemaFile, CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var schema = await SchemaHelper.LoadSchemaAsync(schemaFile, cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
 
         // Act
-        var schema = await SchemaHelper.LoadSchemaAsync(schemaFile, cancellationToken);
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
         var response = await schemaService.WriteSchemaAsync(
             new WriteSchemaRequest(
                 Schema: schema
@@ -42,12 +40,10 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     public async Task Schema_Service_Cannot_Write_Invalid_Schema(string schemaFile, CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var schema = await SchemaHelper.LoadSchemaAsync(schemaFile, cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
 
         // Act
-        var schema = await SchemaHelper.LoadSchemaAsync(schemaFile, cancellationToken);
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
 
         // Assert
         var exception = await Assert.ThrowsAsync<PermifyInternalException>(async () =>
@@ -70,11 +66,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     public async Task Schema_Service_Can_List_After_Write(int amountOfWrites, CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
-
-        // Act
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        var schemaService = Services.GetRequiredService<ISchemaService>();
         for (int i = 0; i < amountOfWrites; i++)
         {
             await schemaService.WriteSchemaAsync(
@@ -85,6 +77,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             );
         }
 
+        // Act
         var response = await schemaService.ListSchemaAsync(new(), cancellationToken);
 
         // Assert
@@ -96,11 +89,9 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     public async Task Schema_Service_Cannot_List_Before_Write(CancellationToken cancellationToken)
     {
         // Arrange
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
+        var schemaService = Services.GetRequiredService<ISchemaService>();
 
         // Act
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
 
         // Assert
         await Assert.ThrowsAsync<PermifyNotFoundException>(async () =>
@@ -112,11 +103,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     {
         // Arrange
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
-
-        // Act
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        var schemaService = Services.GetRequiredService<ISchemaService>();
         await schemaService.WriteSchemaAsync(
             new WriteSchemaRequest(
                 Schema: schema
@@ -124,6 +111,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             cancellationToken
         );
 
+        // Act
         var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
             null,
             new()
@@ -144,11 +132,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     {
         // Arrange
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
-
-        // Act
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        var schemaService = Services.GetRequiredService<ISchemaService>();
         await schemaService.WriteSchemaAsync(
             new WriteSchemaRequest(
                 Schema: schema
@@ -156,6 +140,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             cancellationToken
         );
 
+        // Act
         var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
             null,
             new()
@@ -176,11 +161,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
     {
         // Arrange
         var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
-        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
-        await using DistributedApplication _ = app;
-
-        // Act
-        var schemaService = serviceProvider.GetRequiredService<ISchemaService>();
+        var schemaService = Services.GetRequiredService<ISchemaService>();
         await schemaService.WriteSchemaAsync(
             new WriteSchemaRequest(
                 Schema: schema
@@ -188,6 +169,7 @@ public abstract class SchemaServiceTestsBase(string endpointName) : ServiceTests
             cancellationToken
         );
 
+        // Act
         var response = await schemaService.PartialUpdateSchemaAsync(new PartialSchemaUpdateRequest(
             null,
             new()

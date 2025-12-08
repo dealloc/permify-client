@@ -1,11 +1,22 @@
+using Permify.Client.Integration.Tests.Helpers;
+
 namespace Permify.Client.Integration.Tests.SchemaService;
 
 /// <summary>
 /// Tests for ISchemaService using HTTP protocol implementation.
 /// </summary>
 [InheritsTests]
-public sealed class HttpSchemaServiceTests() : SchemaServiceTestsBase("http")
+public sealed class HttpSchemaServiceTests : SchemaServiceTestsBase
 {
-    protected override void ConfigurePermifyClients(IServiceCollection services, string endpoint)
-        => services.AddPermifyHttpClients(endpoint);
+    protected override IServiceProvider Services { get; set; } = null!;
+
+    [Before(Test)]
+    public void Setup()
+    {
+        Services = ServicesHelper.CreatePermifyProvider(
+            services => services.AddPermifyHttpClients(
+                PermifyContainer.HttpEndpoint.ToString()
+            )
+        );
+    }
 }
