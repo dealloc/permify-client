@@ -9,6 +9,7 @@ namespace Permify.Client.Http.Services;
 
 internal sealed class HttpTenancyService(ApiClient api) : ITenancyService
 {
+    /// <inheritdoc />
     public async Task<CreateTenantResponse> CreateTenantAsync(
         CreateTenantRequest request,
         CancellationToken cancellationToken = default
@@ -36,6 +37,7 @@ internal sealed class HttpTenancyService(ApiClient api) : ITenancyService
         }
     }
 
+    /// <inheritdoc />
     public async Task<ListTenantResponse> ListTenantsAsync(
         ListTenantRequest request,
         CancellationToken cancellationToken = default
@@ -55,6 +57,28 @@ internal sealed class HttpTenancyService(ApiClient api) : ITenancyService
                 throw new NullReferenceException("Response cannot be null");
 
             return TenancyServiceMapper.MapListTenantResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteTenantResponse> DeleteTenantAsync(
+        DeleteTenantRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await api.V1.Tenants[request.Id].DeleteAsync(cancellationToken: cancellationToken);
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return TenancyServiceMapper.MapDeleteTenantResponse(response);
         }
         catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
         {

@@ -24,4 +24,14 @@ public interface ITenancyService
     /// <param name="request">The <see cref="ListTenantRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
     Task<ListTenantResponse> ListTenantsAsync(ListTenantRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Delete a tenant from Permify.
+    /// </summary>
+    /// <param name="request">The <see cref="DeleteTenantRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    Task<DeleteTenantResponse> DeleteTenantAsync(
+        DeleteTenantRequest request,
+        CancellationToken cancellationToken = default
+    );
 }

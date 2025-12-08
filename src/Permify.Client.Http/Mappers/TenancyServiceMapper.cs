@@ -16,4 +16,6 @@ internal static partial class TenancyServiceMapper
     public static partial CreateTenantResponse MapCreateTenantResponse(TenantCreateResponse response);
 
     public static partial ListTenantResponse MapListTenantResponse(TenantListResponse response);
+
+    public static partial DeleteTenantResponse MapDeleteTenantResponse(TenantDeleteResponse response);
 }

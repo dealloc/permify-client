@@ -19,16 +19,13 @@ public sealed class GrpcTenantService(
 ) : ITenancyService
 {
     /// <inheritdoc />
-    public async Task<CreateTenantResponse> CreateTenantAsync(CreateTenantRequest request, CancellationToken cancellationToken = default)
+    public async Task<CreateTenantResponse> CreateTenantAsync(CreateTenantRequest request,
+        CancellationToken cancellationToken = default)
     {
         try
         {
             var response = await client.CreateAsync(
-                new TenantCreateRequest
-                {
-                    Id = request.Id,
-                    Name = request.Name
-                },
+                new TenantCreateRequest { Id = request.Id, Name = request.Name },
                 cancellationToken: cancellationToken
             ).ResponseAsync;
 
@@ -55,8 +52,7 @@ public sealed class GrpcTenantService(
             var response = await client.ListAsync(
                 new TenantListRequest
                 {
-                    PageSize = request.PageSize,
-                    ContinuousToken = request.ContinuousToken ?? string.Empty,
+                    PageSize = request.PageSize, ContinuousToken = request.ContinuousToken ?? string.Empty,
                 },
                 cancellationToken: cancellationToken
             ).ResponseAsync;
@@ -65,6 +61,31 @@ public sealed class GrpcTenantService(
                 throw new NullReferenceException("Response cannot be null");
 
             return TenancyServiceMapper.MapListTenantResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteTenantResponse> DeleteTenantAsync(
+        DeleteTenantRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await client.DeleteAsync(
+                new TenantDeleteRequest { Id = request.Id },
+                cancellationToken: cancellationToken
+            ).ResponseAsync;
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return TenancyServiceMapper.MapDeleteTenantResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {

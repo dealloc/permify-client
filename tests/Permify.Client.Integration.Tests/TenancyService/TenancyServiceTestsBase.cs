@@ -111,4 +111,50 @@ public abstract class TenancyServiceTestsBase(string endpointName) : ServiceTest
         await Assert.That(string.IsNullOrWhiteSpace(response.ContinuousToken)).IsEqualTo(!hasMore);
         await Assert.That(response.Tenants.Count).IsEqualTo(amountReturned);
     }
+
+    [Test]
+    [DependsOn(nameof(Tenancy_Service_Can_List))]
+    [DependsOn(nameof(Tenancy_Service_Can_Create))]
+    public async Task Tenancy_Service_Can_Delete(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using DistributedApplication _ = app;
+        var id = Guid.NewGuid().ToString();
+        var name = $"name of {id}";
+        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
+        await tenancyService.CreateTenantAsync(
+            new CreateTenantRequest(id, name),
+            cancellationToken
+        );
+
+        // Act
+        var response = await tenancyService.DeleteTenantAsync(new(id), cancellationToken);
+
+        // Assert
+        await Assert.That(response.TenantId).IsEqualTo(id);
+
+        var list = await tenancyService.ListTenantsAsync(new(5), cancellationToken);
+        await Assert.That(list.Tenants).IsEmpty();
+    }
+
+    [Test]
+    public async Task Tenancy_Service_Cannot_Delete_Non_Existing(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var (app, serviceProvider) = await SetupTestEnvironmentAsync(cancellationToken);
+        await using DistributedApplication _ = app;
+        var id = Guid.NewGuid().ToString();
+        var tenancyService = serviceProvider.GetRequiredService<ITenancyService>();
+
+        // Act
+        await tenancyService.CreateTenantAsync(
+            new CreateTenantRequest(Guid.NewGuid().ToString(), "Dummy data"),
+            cancellationToken
+        );
+
+        // Assert
+        await Assert.ThrowsExactlyAsync<PermifyNotFoundException>(async () =>
+            await tenancyService.DeleteTenantAsync(new(id), cancellationToken));
+    }
 }
