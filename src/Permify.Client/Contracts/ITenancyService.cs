@@ -1,3 +1,4 @@
+using Permify.Client.Exceptions;
 using Permify.Client.Models.Tenancy;
 
 namespace Permify.Client.Contracts;
@@ -8,6 +9,7 @@ namespace Permify.Client.Contracts;
 /// <remarks>
 /// Permify has a pre-inserted tenant - <c>t1</c> - by default for the ones that don’t use multi-tenancy.
 /// </remarks>
+/// <seealso href="https://docs.permify.co/api-reference/tenancy" />
 public interface ITenancyService
 {
     /// <summary>
@@ -16,6 +18,7 @@ public interface ITenancyService
     /// </summary>
     /// <param name="request">The <see cref="CreateTenantRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to create the tenant.</exception>
     Task<CreateTenantResponse> CreateTenantAsync(CreateTenantRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -23,6 +26,7 @@ public interface ITenancyService
     /// </summary>
     /// <param name="request">The <see cref="ListTenantRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to list the tenants.</exception>
     Task<ListTenantResponse> ListTenantsAsync(ListTenantRequest request, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -30,6 +34,7 @@ public interface ITenancyService
     /// </summary>
     /// <param name="request">The <see cref="DeleteTenantRequest" /> to send.</param>
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to delete the tenant.</exception>
     Task<DeleteTenantResponse> DeleteTenantAsync(
         DeleteTenantRequest request,
         CancellationToken cancellationToken = default

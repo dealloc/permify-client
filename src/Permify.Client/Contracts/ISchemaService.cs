@@ -6,6 +6,7 @@ namespace Permify.Client.Contracts;
 /// <summary>
 /// Modeling and Permify schema-related functionalities including configuration and auditing.
 /// </summary>
+/// <seealso href="https://docs.permify.co/api-reference/schema" />
 public interface ISchemaService
 {
     /// <summary>
