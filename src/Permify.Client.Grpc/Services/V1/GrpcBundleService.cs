@@ -14,7 +14,7 @@ using BundleServiceMapper = Permify.Client.Grpc.Mappers.V1.BundleServiceMapper;
 namespace Permify.Client.Grpc.Services.V1;
 
 /// <summary>
-/// Implements <see cref="IBundleService"/> using gRPC.
+/// Implements <see cref="IBundleService" /> using gRPC.
 /// </summary>
 public sealed class GrpcBundleService(
     IOptions<PermifyOptions> options,

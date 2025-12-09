@@ -25,6 +25,9 @@ public static class ServiceCollectionExtensions
         services.AddGrpcClient<Base.V1.Bundle.BundleClient>(options => options.Address = new Uri(baseUrl));
         services.AddScoped<IBundleService, GrpcBundleService>();
 
+        services.AddGrpcClient<Base.V1.Data.DataClient>(options => options.Address = new Uri(baseUrl));
+        services.AddScoped<IDataService, GrpcDataService>();
+
         return services;
     }
 }
