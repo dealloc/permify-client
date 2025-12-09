@@ -14,4 +14,6 @@ namespace Permify.Client.Http.Mappers.V1;
 internal static partial class DataServiceMapper
 {
     public static partial WriteDataResponse MapToWriteDataResponse(DataWriteResponse response);
+
+    public static partial ReadRelationshipsResponse MapToReadRelationshipsResponse(RelationshipReadResponse response);
 }

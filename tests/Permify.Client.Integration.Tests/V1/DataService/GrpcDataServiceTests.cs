@@ -7,6 +7,7 @@ namespace Permify.Client.Integration.Tests.V1.DataService;
 /// Tests for <see cref="IDataService" /> using gRPC protocol implementation.
 /// </summary>
 [InheritsTests]
+[Category("gRPC")]
 public class GrpcDataServiceTests : DataServiceTestsBase
 {
     protected override IServiceProvider Services { get; set; } = null!;

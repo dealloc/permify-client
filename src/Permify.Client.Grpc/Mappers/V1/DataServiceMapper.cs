@@ -18,4 +18,9 @@ public static partial class DataServiceMapper
     /// Maps a gRPC WriteDataResponse to domain DataWriteResponsew.
     /// </summary>
     public static partial WriteDataResponse MapToWriteDataResponse(DataWriteResponse response);
+
+    /// <summary>
+    /// Maps a gRPC RelationshipReadResponse to domain ReadRelationshipsResponse.
+    /// </summary>
+    public static partial ReadRelationshipsResponse MapToReadRelationshipsResponse(RelationshipReadResponse response);
 }

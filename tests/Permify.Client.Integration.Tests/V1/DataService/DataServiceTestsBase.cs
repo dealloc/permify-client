@@ -1,4 +1,5 @@
 using Permify.Client.Contracts.V1;
+using Permify.Client.Integration.Tests.Fixtures;
 using Permify.Client.Integration.Tests.Helpers;
 using Permify.Client.Integration.Tests.V1.SchemaService;
 using Permify.Client.Models.V1;
@@ -13,8 +14,8 @@ namespace Permify.Client.Integration.Tests.V1.DataService;
 /// Abstract base class for testing <see cref="IDataService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
-[Retry(3)]
-[Timeout(1 * 60 * 1000)]
+[Category("Integration")]
+[Category("Permify.Client.Contracts.V1.IDataService")]
 public abstract class DataServiceTestsBase
 {
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
@@ -61,7 +62,7 @@ public abstract class DataServiceTestsBase
                 new Tuple(
                     Entity: new Entity("document", "1"),
                     Relation: "owner",
-                    Subject: new Entity("user", "1")
+                    Subject: new Subject("user", "1")
                 )
             ],
             Attributes: []
@@ -89,12 +90,12 @@ public abstract class DataServiceTestsBase
                 new Tuple(
                     Entity: new Entity("document", "1"),
                     Relation: "owner",
-                    Subject: new Entity("user", "1")
+                    Subject: new Subject("user", "1")
                 ),
                 new Tuple(
                     Entity: new Entity("document", "2"),
                     Relation: "owner",
-                    Subject: new Entity("user", "2")
+                    Subject: new Subject("user", "2")
                 )
             ],
             Attributes: []
@@ -121,7 +122,7 @@ public abstract class DataServiceTestsBase
                 new Tuple(
                     Entity: new Entity("document", "1"),
                     Relation: "owner",
-                    Subject: new Entity("user", "1")
+                    Subject: new Subject("user", "1")
                 )
             ],
             Attributes: []
@@ -160,7 +161,7 @@ public abstract class DataServiceTestsBase
                 new Tuple(
                     Entity: new Entity("document", "1"),
                     Relation: "owner",
-                    Subject: new Entity("user", "1")
+                    Subject: new Subject("user", "1")
                 )
             ],
             Attributes: []
@@ -208,7 +209,7 @@ public abstract class DataServiceTestsBase
                 new Tuple(
                     Entity: new Entity("document", "1"),
                     Relation: "owner",
-                    Subject: new Entity("user", "1")
+                    Subject: new Subject("user", "1")
                 ),
             ],
             Attributes: [
@@ -223,5 +224,71 @@ public abstract class DataServiceTestsBase
         // Assert
         await Assert.That(response).IsNotNull();
         await Assert.That(response.SnapToken).IsNotNull();
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Write_Attribute))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Read_Relationships_Without_Filter(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
+            Metadata: new(),
+            Filter: new ReadRelationshipsRequest.RequestFilter(
+                Entity: null,
+                Relation: null,
+                Subject: null
+            ),
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Tuples.Count).IsEqualTo(3);
+        await Assert.That(response.Tuples[0].Entity.Type).IsEqualTo("document");
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Write_Attribute))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Read_Relationships(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
+            Metadata: new(),
+            Filter: new ReadRelationshipsRequest.RequestFilter(
+                Entity: new EntityFilter(
+                    Type: "organization",
+                    Ids: ["1"]
+                ),
+                Relation: null,
+                Subject: null
+            ),
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Tuples.Count).IsEqualTo(1);
+        await Assert.That(response.Tuples[0].Entity.Type).IsEqualTo("organization");
+        await Assert.That(response.Tuples[0].Entity.Id).IsEqualTo("1");
     }
 }

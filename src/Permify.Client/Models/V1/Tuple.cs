@@ -18,5 +18,5 @@ namespace Permify.Client.Models.V1;
 public record Tuple(
     Entity Entity,
     string Relation,
-    Entity Subject
+    Subject Subject
 );

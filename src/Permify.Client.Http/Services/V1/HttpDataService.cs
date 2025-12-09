@@ -11,6 +11,8 @@ using Permify.Client.Http.Mappers.V1;
 using Permify.Client.Models.V1.Data;
 using Permify.Client.Options;
 
+using EntityFilter = Permify.Client.Http.Generated.Models.EntityFilter;
+
 namespace Permify.Client.Http.Services.V1;
 
 internal sealed class HttpDataService(
@@ -65,6 +67,53 @@ internal sealed class HttpDataService(
                 throw new NullReferenceException("Response cannot be null");
 
             return DataServiceMapper.MapToWriteDataResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    public async Task<ReadRelationshipsResponse> ReadRelationshipsAsync(
+        ReadRelationshipsRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await Datas.Relationships.Read.PostAsync(
+                new ReadRelationshipsBody
+                {
+                    Metadata = new RelationshipReadRequestMetadata
+                    {
+                        SnapToken = request.Metadata?.SnapToken ?? string.Empty
+                    },
+                    Filter = new TupleFilter
+                    {
+                        Entity = new EntityFilter
+                        {
+                            Type = request.Filter.Entity?.Type,
+                            Ids = request.Filter.Entity?.Ids.ToList()
+                        },
+                        Relation = request.Filter.Relation,
+                        Subject = new SubjectFilter
+                        {
+                            Type = request.Filter.Subject?.Type,
+                            Ids = request.Filter.Subject?.Ids.ToList(),
+                            Relation = request.Filter.Subject?.Relation
+                        }
+                    },
+                    PageSize = request.PageSize,
+                    ContinuousToken = request.ContinuousToken
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return DataServiceMapper.MapToReadRelationshipsResponse(response);
         }
         catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
         {

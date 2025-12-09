@@ -19,4 +19,15 @@ public interface IDataService
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
     /// <exception cref="PermifyClientException">If Permify returns an error while attempting to write the data.</exception>
     Task<WriteDataResponse> WriteDataAsync(WriteDataRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Read API allows for directly querying the stored graph data to display and filter stored relational tuples.
+    /// </summary>
+    /// <param name="request">The <see cref="ReadRelationshipsRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to read the relationships.</exception>
+    Task<ReadRelationshipsResponse> ReadRelationshipsAsync(
+        ReadRelationshipsRequest request,
+        CancellationToken cancellationToken = default
+    );
 }
