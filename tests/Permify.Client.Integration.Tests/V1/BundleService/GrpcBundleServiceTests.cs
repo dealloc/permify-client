@@ -7,6 +7,7 @@ namespace Permify.Client.Integration.Tests.V1.BundleService;
 /// Tests for <see cref="IBundleService"/> using gRPC protocol implementation.
 /// </summary>
 [InheritsTests]
+[Category("gRPC")]
 public class GrpcBundleServiceTests : BundleServiceTestsBase
 {
     protected override IServiceProvider Services { get; set; } = null!;

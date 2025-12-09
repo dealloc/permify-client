@@ -8,8 +8,8 @@ namespace Permify.Client.Integration.Tests.V1.TenancyService;
 /// Abstract base class for testing <see cref="ITenancyService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
-[Retry(3)]
-[Timeout(1 * 60 * 1000)]
+[Category("Integration")]
+[Category("Permify.Client.Contracts.V1.ITenancyService")]
 public abstract class TenancyServiceTestsBase
 {
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]

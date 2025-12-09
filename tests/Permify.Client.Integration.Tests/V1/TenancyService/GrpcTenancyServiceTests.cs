@@ -7,6 +7,7 @@ namespace Permify.Client.Integration.Tests.V1.TenancyService;
 /// Tests for <see cref="ITenancyService"/> using gRPC protocol implementation.
 /// </summary>
 [InheritsTests]
+[Category("gRPC")]
 public sealed class GrpcTenancyServiceTests : TenancyServiceTestsBase
 {
     protected override IServiceProvider Services { get; set; } = null!;

@@ -1,4 +1,6 @@
-entity user {}
+entity user {
+    attribute is_real boolean
+}
 
 entity organization {
     relation admin @user
@@ -17,4 +19,6 @@ entity document {
     action delete = owner or parent.admin
 
     permission edit = parent.admin or owner
+
+    attribute is_private boolean
 }

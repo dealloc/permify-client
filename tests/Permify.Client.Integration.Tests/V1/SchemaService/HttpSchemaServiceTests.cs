@@ -7,6 +7,7 @@ namespace Permify.Client.Integration.Tests.V1.SchemaService;
 /// Tests for <see cref="ISchemaService" /> using HTTP protocol implementation.
 /// </summary>
 [InheritsTests]
+[Category("HTTP")]
 public sealed class HttpSchemaServiceTests : SchemaServiceTestsBase
 {
     protected override IServiceProvider Services { get; set; } = null!;

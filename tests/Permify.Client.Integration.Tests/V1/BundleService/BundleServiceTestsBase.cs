@@ -7,8 +7,8 @@ namespace Permify.Client.Integration.Tests.V1.BundleService;
 /// Abstract base class for testing <see cref="IBundleService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
-[Retry(3)]
-[Timeout(1 * 60 * 1000)]
+[Category("Integration")]
+[Category("Permify.Client.Contracts.V1.IBundleService")]
 public abstract class BundleServiceTestsBase
 {
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]

@@ -7,6 +7,7 @@ namespace Permify.Client.Integration.Tests.V1.SchemaService;
 /// Tests for <see cref="ISchemaService" /> using gRPC protocol implementation.
 /// </summary>
 [InheritsTests]
+[Category("gRPC")]
 public sealed class GrpcSchemaServiceTests : SchemaServiceTestsBase
 {
     protected override IServiceProvider Services { get; set; } = null!;
