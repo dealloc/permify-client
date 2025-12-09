@@ -2,6 +2,16 @@
 
 default:
 
+pre-commit: build format test
+
+ci:
+    dotnet clean
+    dotnet build ./src/Permify.Client/Permify.Client.csproj --no-restore --configuration Release
+    dotnet build ./src/Permify.Client.Grpc/Permify.Client.Grpc.csproj --no-restore --configuration Release
+    dotnet build ./src/Permify.Client.Http/Permify.Client.Http.csproj --no-restore --configuration Release
+    dotnet test --maximum-parallel-tests 10
+    dotnet format --verify-no-changes --exclude examples
+
 build:
     dotnet build
 
