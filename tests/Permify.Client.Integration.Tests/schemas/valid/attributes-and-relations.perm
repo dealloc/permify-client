@@ -1,0 +1,22 @@
+entity user {
+    attribute is_real boolean
+}
+
+entity document {
+    relation reviewer @user
+    relation owner @user
+
+    action view = owner or reviewer
+    action delete = owner
+
+    permission edit = owner
+
+    attribute name string
+    attribute word_count integer
+    attribute fault_tolerance double
+    attribute is_private boolean
+    attribute tags string[]
+    attribute scores integer[]
+    attribute fault_tolerances double[]
+    attribute yes_or_no boolean[]
+}

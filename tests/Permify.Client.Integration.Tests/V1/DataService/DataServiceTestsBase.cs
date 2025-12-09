@@ -28,7 +28,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Empty(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -50,7 +50,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Tuple(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -78,7 +78,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Tuples(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -112,7 +112,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Attribute(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -151,7 +151,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Attributes(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -197,7 +197,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Write_Combination(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -233,7 +233,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Read_Relationships_Without_Filter(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -264,7 +264,7 @@ public abstract class DataServiceTestsBase
     public async Task Data_Service_Can_Read_Relationships(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
         var schemaService = Services.GetRequiredService<ISchemaService>();
         var dataService = Services.GetRequiredService<IDataService>();
         await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
@@ -275,7 +275,7 @@ public abstract class DataServiceTestsBase
             Metadata: new(),
             Filter: new ReadRelationshipsRequest.RequestFilter(
                 Entity: new EntityFilter(
-                    Type: "organization",
+                    Type: "document",
                     Ids: ["1"]
                 ),
                 Relation: null,
@@ -288,7 +288,160 @@ public abstract class DataServiceTestsBase
         // Assert
         await Assert.That(response).IsNotNull();
         await Assert.That(response.Tuples.Count).IsEqualTo(1);
-        await Assert.That(response.Tuples[0].Entity.Type).IsEqualTo("organization");
+        await Assert.That(response.Tuples[0].Entity.Type).IsEqualTo("document");
         await Assert.That(response.Tuples[0].Entity.Id).IsEqualTo("1");
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Write_Attribute))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Read_Attributes_Without_Filter(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        var response = await dataService.ReadAttributesAsync(new ReadAttributesRequest(
+            Metadata: new(),
+            Filter: null,
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Attributes.Count).IsEqualTo(8);
+        await Assert.That(response.Attributes[0].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[0].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[0].Attribute).IsEqualTo("name");
+        await Assert.That(response.Attributes[0].Value).IsEqualTo("name of document 1");
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Write_Attribute))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Read_Attributes_Filter_By_Entity(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        var response = await dataService.ReadAttributesAsync(new ReadAttributesRequest(
+            Metadata: new(),
+            Filter: new(
+                Entity: new EntityFilter("document", ["1"]),
+                Attributes: []
+            ),
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Attributes.Count).IsEqualTo(8);
+        await Assert.That(response.Attributes[0].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[0].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[0].Attribute).IsEqualTo("name");
+        await Assert.That(response.Attributes[0].Value).IsEqualTo("name of document 1");
+
+        await Assert.That(response.Attributes[1].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[1].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[1].Attribute).IsEqualTo("word_count");
+        await Assert.That(response.Attributes[1].Value).IsEqualTo(100);
+
+        await Assert.That(response.Attributes[2].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[2].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[2].Attribute).IsEqualTo("fault_tolerance");
+        await Assert.That(response.Attributes[2].Value).IsEqualTo(0.5d);
+
+        await Assert.That(response.Attributes[3].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[3].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[3].Attribute).IsEqualTo("is_private");
+        await Assert.That(response.Attributes[3].Value).IsEqualTo(true);
+
+        await Assert.That(response.Attributes[4].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[4].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[4].Attribute).IsEqualTo("tags");
+        await Assert
+            .That(response.Attributes[4].Value)
+            .IsTypeOf<string[]>()
+            .And
+            .Contains("tag-1");
+
+        await Assert.That(response.Attributes[5].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[5].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[5].Attribute).IsEqualTo("scores");
+        await Assert
+            .That(response.Attributes[5].Value)
+            .IsTypeOf<int[]>()
+            .And
+            .Contains(1)
+            .And
+            .Contains(5);
+
+        await Assert.That(response.Attributes[6].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[6].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[6].Attribute).IsEqualTo("fault_tolerances");
+        await Assert
+            .That(response.Attributes[6].Value)
+            .IsTypeOf<double[]>()
+            .And
+            .Contains(0.1d)
+            .And
+            .Contains(0.5);
+
+        await Assert.That(response.Attributes[7].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[7].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[7].Attribute).IsEqualTo("yes_or_no");
+        await Assert
+            .That(response.Attributes[7].Value)
+            .IsTypeOf<bool[]>()
+            .And
+            .Contains(true)
+            .And
+            .Contains(false);
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Write_Attribute))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Read_Attributes_Filter_By_Attribute(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        var response = await dataService.ReadAttributesAsync(new ReadAttributesRequest(
+            Metadata: new(),
+            Filter: new(
+                Entity: null,
+                Attributes: ["word_count"]
+            ),
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Attributes.Count).IsEqualTo(1);
+        await Assert.That(response.Attributes[0].Entity.Type).IsEqualTo("document");
+        await Assert.That(response.Attributes[0].Entity.Id).IsEqualTo("1");
+        await Assert.That(response.Attributes[0].Attribute).IsEqualTo("word_count");
+        await Assert.That(response.Attributes[0].Value).IsEqualTo(100);
     }
 }

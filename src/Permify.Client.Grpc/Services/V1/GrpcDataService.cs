@@ -1,7 +1,5 @@
 using Base.V1;
 
-using Google.Protobuf.WellKnownTypes;
-
 using Grpc.Core;
 
 using Microsoft.Extensions.Options;
@@ -114,6 +112,43 @@ public sealed class GrpcDataService(
             }, cancellationToken: cancellationToken).ResponseAsync;
 
             return DataServiceMapper.MapToReadRelationshipsResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<ReadAttributesResponse> ReadAttributesAsync(
+        ReadAttributesRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await client.ReadAttributesAsync(new AttributeReadRequest
+            {
+                TenantId = options.Value.TenantId,
+                Metadata = new AttributeReadRequestMetadata
+                {
+                    SnapToken = request.Metadata?.SnapToken ?? string.Empty,
+                },
+                Filter = new AttributeFilter
+                {
+                    Entity = new EntityFilter
+                    {
+                        Type = request.Filter?.Entity?.Type ?? string.Empty,
+                        Ids = { request.Filter?.Entity?.Ids ?? [] }
+                    },
+                    Attributes = { request.Filter?.Attributes ?? [] }
+                },
+                PageSize = request.PageSize,
+                ContinuousToken = request.ContinuousToken ?? string.Empty
+            }, cancellationToken: cancellationToken).ResponseAsync;
+
+            return DataServiceMapper.MapToReadAttributesResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {

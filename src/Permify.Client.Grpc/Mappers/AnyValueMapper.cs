@@ -42,4 +42,26 @@ public static class AnyValueMapper
             _ => throw new NotSupportedException($"Unsupported type: {value.GetType().FullName}")
         };
     }
+
+    /// <summary>
+    /// Maps a <see cref="Any"/> value to a CLR value.
+    /// </summary>
+    public static object MapToObject(Any value)
+    {
+        if (value == null)
+            throw new ArgumentNullException(nameof(value));
+
+        return value.TypeUrl switch
+        {
+            $"{TypeUrlPrefix}/base.v1.StringValue" => value.Unpack<BaseV1.StringValue>().Data,
+            $"{TypeUrlPrefix}/base.v1.IntegerValue" => value.Unpack<BaseV1.IntegerValue>().Data,
+            $"{TypeUrlPrefix}/base.v1.DoubleValue" => value.Unpack<BaseV1.DoubleValue>().Data,
+            $"{TypeUrlPrefix}/base.v1.BooleanValue" => value.Unpack<BaseV1.BooleanValue>().Data,
+            $"{TypeUrlPrefix}/base.v1.StringArrayValue" => value.Unpack<BaseV1.StringArrayValue>().Data.ToArray(),
+            $"{TypeUrlPrefix}/base.v1.IntegerArrayValue" => value.Unpack<BaseV1.IntegerArrayValue>().Data.ToArray(),
+            $"{TypeUrlPrefix}/base.v1.DoubleArrayValue" => value.Unpack<BaseV1.DoubleArrayValue>().Data.ToArray(),
+            $"{TypeUrlPrefix}/base.v1.BooleanArrayValue" => value.Unpack<BaseV1.BooleanArrayValue>().Data.ToArray(),
+            _ => throw new NotSupportedException($"Unsupported type: '{value.TypeUrl}'")
+        };
+    }
 }

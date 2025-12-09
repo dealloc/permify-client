@@ -121,4 +121,46 @@ internal sealed class HttpDataService(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<ReadAttributesResponse> ReadAttributesAsync(
+        ReadAttributesRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await Datas.Attributes.Read.PostAsync(
+                new ReadAttributesBody
+                {
+                    Metadata = new AttributeReadRequestMetadata
+                    {
+                        SnapToken = request.Metadata?.SnapToken ?? string.Empty
+                    },
+                    Filter = new AttributeFilter
+                    {
+                        Entity = new EntityFilter
+                        {
+                            Type = request.Filter?.Entity?.Type ?? string.Empty,
+                            Ids = request.Filter?.Entity?.Ids.ToList() ?? []
+                        },
+                        Attributes = request.Filter?.Attributes.ToList() ?? []
+                    },
+                    PageSize = request.PageSize,
+                    ContinuousToken = request.ContinuousToken
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return DataServiceMapper.MapToReadAttributesResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }
