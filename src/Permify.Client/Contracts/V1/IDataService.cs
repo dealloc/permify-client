@@ -41,4 +41,13 @@ public interface IDataService
         ReadAttributesRequest request,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// The “Run Bundle” API provides a straightforward way to execute predefined bundles within your application’s tenant environment.
+    /// By sending a POST request to this endpoint, you can activate specific functionalities or processes encapsulated in a bundle.
+    /// </summary>
+    /// <param name="request">The <see cref="RunBundleRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to execute the bundle.</exception>
+    Task<RunBundleResponse> RunBundleAsync(RunBundleRequest request, CancellationToken cancellationToken = default);
 }

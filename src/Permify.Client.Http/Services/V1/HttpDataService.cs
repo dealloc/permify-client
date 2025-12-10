@@ -11,6 +11,8 @@ using Permify.Client.Http.Mappers.V1;
 using Permify.Client.Models.V1.Data;
 using Permify.Client.Options;
 
+using Riok.Mapperly.Abstractions;
+
 using EntityFilter = Permify.Client.Http.Generated.Models.EntityFilter;
 
 namespace Permify.Client.Http.Services.V1;
@@ -156,6 +158,38 @@ internal sealed class HttpDataService(
                 throw new NullReferenceException("Response cannot be null");
 
             return DataServiceMapper.MapToReadAttributesResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<RunBundleResponse> RunBundleAsync(
+        RunBundleRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await Datas.RunBundle.PostAsync(
+                new RunBundleBody
+                {
+                    Name = request.Name,
+                    Arguments = new RunBundleBody_arguments
+                    {
+                        AdditionalData = request.Attributes.ToDictionary(kvp => kvp.Key, kvp => kvp.Value as object)
+                    }
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return DataServiceMapper.MapToRunBundleResponse(response);
         }
         catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
         {

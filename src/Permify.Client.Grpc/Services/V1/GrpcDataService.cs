@@ -156,4 +156,31 @@ public sealed class GrpcDataService(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<RunBundleResponse> RunBundleAsync(
+        RunBundleRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await client.RunBundleAsync(new BundleRunRequest
+            {
+                TenantId = options.Value.TenantId,
+                Name = request.Name,
+                Arguments =
+                {
+                    request.Attributes
+                }
+            }, cancellationToken: cancellationToken).ResponseAsync;
+
+            return DataServiceMapper.MapToRunBundleResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }

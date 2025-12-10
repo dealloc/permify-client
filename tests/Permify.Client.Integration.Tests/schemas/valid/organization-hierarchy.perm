@@ -1,5 +1,4 @@
 entity user {
-    attribute is_real boolean
 }
 
 entity organization {
@@ -23,7 +22,4 @@ entity document {
     permission edit = parent.admin or owner
 
     attribute is_private boolean
-    attribute word_count integer
-    attribute fault_tolerance double
-    attribute tags string[]
 }

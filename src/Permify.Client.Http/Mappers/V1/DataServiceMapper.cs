@@ -19,4 +19,6 @@ internal static partial class DataServiceMapper
     public static partial ReadRelationshipsResponse MapToReadRelationshipsResponse(RelationshipReadResponse response);
 
     public static partial ReadAttributesResponse MapToReadAttributesResponse(AttributeReadResponse response);
+
+    public static partial RunBundleResponse MapToRunBundleResponse(BundleRunResponse response);
 }

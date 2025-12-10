@@ -32,6 +32,11 @@ public static partial class DataServiceMapper
     public static partial ReadAttributesResponse MapToReadAttributesResponse(AttributeReadResponse response);
 
     /// <summary>
+    /// Maps a gRPC BundleRunResponse to domain RunBundleResponse.
+    /// </summary>
+    public static partial RunBundleResponse MapToRunBundleResponse(BundleRunResponse response);
+
+    /// <summary>
     /// Maps a gRPC Attribute to domain AttributeEntity.
     /// </summary>
     [MapProperty(nameof(Base.V1.Attribute.Attribute_), nameof(AttributeEntity.Attribute))]

@@ -1,6 +1,7 @@
 using Permify.Client.Contracts.V1;
 using Permify.Client.Integration.Tests.Fixtures;
 using Permify.Client.Integration.Tests.Helpers;
+using Permify.Client.Integration.Tests.V1.BundleService;
 using Permify.Client.Integration.Tests.V1.SchemaService;
 using Permify.Client.Models.V1;
 using Permify.Client.Models.V1.Data;
@@ -446,5 +447,66 @@ public abstract class DataServiceTestsBase
         await Assert.That(response.Attributes[0].Entity.Id).IsEqualTo("1");
         await Assert.That(response.Attributes[0].Attribute).IsEqualTo("word_count");
         await Assert.That(response.Attributes[0].Value).IsEqualTo(100);
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Read_Relationships))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    [DependsOn<GrpcBundleServiceTests>(nameof(BundleServiceTestsBase.Bundle_Service_Can_Write_Complex))]
+    public async Task Data_Service_Can_Run_Bundle(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var bundleService = Services.GetRequiredService<IBundleService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await bundleService.WriteBundleAsync(new([
+            new("organization_created", [
+                "creatorID",
+                "organizationID"
+            ], [
+                new(
+                    AttributesWrite:
+                    [
+                        "organization:{{.organizationID}}$public|boolean:false"
+                    ],
+                    AttributesDelete: [],
+                    RelationshipsWrite:
+                    [
+                        "organization:{{.organizationID}}#admin@user:{{.creatorID}}",
+                        "organization:{{.organizationID}}#manager@user:{{.creatorID}}"
+                    ],
+                    RelationshipsDelete: []
+                )
+            ])
+        ]), cancellationToken);
+
+        // Act
+        await dataService.RunBundleAsync(new RunBundleRequest("organization_created", new()
+        {
+            { "creatorID", "1" },
+            { "organizationID", "1" }
+        }), cancellationToken);
+
+        // Assert
+        var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
+            Metadata: new(),
+            Filter: new(
+                Entity: new("organization", ["1"]),
+                Relation: null,
+                Subject: null
+            ),
+            PageSize: 10
+        ), cancellationToken);
+
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Tuples.Count).IsEqualTo(2);
+        await Assert.That(response.Tuples[0].Relation).IsEqualTo("admin");
+        await Assert.That(response.Tuples[0].Subject.Type).IsEqualTo("user");
+        await Assert.That(response.Tuples[0].Subject.Id).IsEqualTo("1");
+        await Assert.That(response.Tuples[1].Relation).IsEqualTo("manager");
+        await Assert.That(response.Tuples[1].Subject.Type).IsEqualTo("user");
+        await Assert.That(response.Tuples[1].Subject.Id).IsEqualTo("1");
     }
 }
