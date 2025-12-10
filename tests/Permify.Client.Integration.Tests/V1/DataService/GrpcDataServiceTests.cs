@@ -1,5 +1,4 @@
 using Permify.Client.Contracts.V1;
-using Permify.Client.Integration.Tests.Helpers;
 
 namespace Permify.Client.Integration.Tests.V1.DataService;
 
@@ -10,15 +9,10 @@ namespace Permify.Client.Integration.Tests.V1.DataService;
 [Category("gRPC")]
 public class GrpcDataServiceTests : DataServiceTestsBase
 {
-    protected override IServiceProvider Services { get; set; } = null!;
-
-    [Before(Test)]
-    public void Setup()
+    protected override void ConfigureServicesAsync(IServiceCollection services)
     {
-        Services = ServicesHelper.CreatePermifyProvider(
-            services => services.AddPermifyGrpcClients(
-                PermifyContainer.GrpcEndpoint.ToString()
-            )
+        services.AddPermifyGrpcClients(
+            PermifyContainer.GrpcEndpoint.ToString()
         );
     }
 }

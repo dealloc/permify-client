@@ -22,7 +22,9 @@ benchmark:
     dotnet run -c Release -f net10.0 --project ./benchmarks/PermifyClient.Benchmarks -- --join --allStats true 
 
 test:
-    dotnet test --report-trx --github-reporter-style full --maximum-parallel-tests 20
+    dotnet test -f net10.0 --report-trx --github-reporter-style full
+    dotnet test -f net9.0 --report-trx --github-reporter-style full
+    dotnet test -f net8.0 --report-trx --github-reporter-style full
 
 [working-directory: 'docs']
 docs:

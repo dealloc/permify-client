@@ -1,5 +1,6 @@
 using Permify.Client.Contracts.V1;
 using Permify.Client.Exceptions;
+using Permify.Client.Integration.Tests.Base;
 
 namespace Permify.Client.Integration.Tests.V1.BundleService;
 
@@ -12,13 +13,8 @@ namespace Permify.Client.Integration.Tests.V1.BundleService;
 [Category("Integration")]
 [Category("IBundleService")]
 [Timeout(1 * 60 * 10000)]
-public abstract class BundleServiceTestsBase
+public abstract class BundleServiceTestsBase : SharedPermifyContainerTest
 {
-    [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
-    public required PermifyContainer PermifyContainer { get; init; }
-
-    protected abstract IServiceProvider Services { get; set; }
-
     [Test]
     public async Task Bundle_Service_Can_Write(CancellationToken cancellationToken)
     {

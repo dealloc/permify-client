@@ -1,5 +1,6 @@
 using Permify.Client.Contracts.V1;
 using Permify.Client.Exceptions;
+using Permify.Client.Integration.Tests.Base;
 using Permify.Client.Integration.Tests.Helpers;
 using Permify.Client.Models.V1.Schema;
 
@@ -14,13 +15,8 @@ namespace Permify.Client.Integration.Tests.V1.SchemaService;
 [Category("Integration")]
 [Category("ISchemaService")]
 [Timeout(1 * 60 * 10000)]
-public abstract class SchemaServiceTestsBase
+public abstract class SchemaServiceTestsBase : SharedPermifyContainerTest
 {
-    [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
-    public required PermifyContainer PermifyContainer { get; init; }
-
-    protected abstract IServiceProvider Services { get; set; }
-
     [Test, MethodDataSource(typeof(SchemaHelper), nameof(SchemaHelper.GetAllValidSchemas))]
     public async Task Schema_Service_Can_Write(string schemaFile, CancellationToken cancellationToken)
     {

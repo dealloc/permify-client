@@ -1,5 +1,4 @@
 using Permify.Client.Contracts.V1;
-using Permify.Client.Integration.Tests.Helpers;
 
 namespace Permify.Client.Integration.Tests.V1.SchemaService;
 
@@ -10,15 +9,10 @@ namespace Permify.Client.Integration.Tests.V1.SchemaService;
 [Category("HTTP")]
 public sealed class HttpSchemaServiceTests : SchemaServiceTestsBase
 {
-    protected override IServiceProvider Services { get; set; } = null!;
-
-    [Before(Test)]
-    public void Setup()
+    protected override void ConfigureServicesAsync(IServiceCollection services)
     {
-        Services = ServicesHelper.CreatePermifyProvider(
-            services => services.AddPermifyHttpClients(
-                PermifyContainer.HttpEndpoint.ToString()
-            )
+        services.AddPermifyHttpClients(
+            PermifyContainer.HttpEndpoint.ToString()
         );
     }
 }

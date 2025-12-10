@@ -1,4 +1,5 @@
 using Permify.Client.Contracts.V1;
+using Permify.Client.Integration.Tests.Base;
 using Permify.Client.Integration.Tests.Fixtures;
 using Permify.Client.Integration.Tests.Helpers;
 using Permify.Client.Integration.Tests.V1.BundleService;
@@ -20,13 +21,8 @@ namespace Permify.Client.Integration.Tests.V1.DataService;
 [Category("Integration")]
 [Category("IDataService")]
 [Timeout(1 * 60 * 10000)]
-public abstract class DataServiceTestsBase
+public abstract class DataServiceTestsBase : SharedPermifyContainerTest
 {
-    [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
-    public required PermifyContainer PermifyContainer { get; init; }
-
-    protected abstract IServiceProvider Services { get; set; }
-
     [Test]
     [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
     public async Task Data_Service_Can_Write_Empty(CancellationToken cancellationToken)
