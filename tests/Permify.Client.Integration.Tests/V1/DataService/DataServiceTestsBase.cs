@@ -242,7 +242,7 @@ public abstract class DataServiceTestsBase : SharedPermifyContainerTest
         // Act
         var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
             Metadata: new(),
-            Filter: new ReadRelationshipsRequest.RequestFilter(
+            Filter: new (
                 Entity: null,
                 Relation: null,
                 Subject: null
@@ -273,7 +273,7 @@ public abstract class DataServiceTestsBase : SharedPermifyContainerTest
         // Act
         var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
             Metadata: new(),
-            Filter: new ReadRelationshipsRequest.RequestFilter(
+            Filter: new (
                 Entity: new EntityFilter(
                     Type: "document",
                     Ids: ["1"]
@@ -449,60 +449,94 @@ public abstract class DataServiceTestsBase : SharedPermifyContainerTest
     [DependsOn(nameof(Data_Service_Can_Read_Relationships))]
     [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
     [DependsOn<GrpcBundleServiceTests>(nameof(BundleServiceTestsBase.Bundle_Service_Can_Write_Complex))]
-    public async Task Data_Service_Can_Run_Bundle(CancellationToken cancellationToken)
+    public async Task Data_Service_Can_Delete_Empty(CancellationToken cancellationToken)
     {
         // Arrange
-        var schema = await SchemaHelper.LoadSchemaAsync("valid/organization-hierarchy.perm", cancellationToken);
-        var schemaService = Services.GetRequiredService<ISchemaService>();
-        var bundleService = Services.GetRequiredService<IBundleService>();
         var dataService = Services.GetRequiredService<IDataService>();
-        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
-        await bundleService.WriteBundleAsync(new([
-            new("organization_created", [
-                "creatorID",
-                "organizationID"
-            ], [
-                new(
-                    AttributesWrite:
-                    [
-                        "organization:{{.organizationID}}$public|boolean:false"
-                    ],
-                    AttributesDelete: [],
-                    RelationshipsWrite:
-                    [
-                        "organization:{{.organizationID}}#admin@user:{{.creatorID}}",
-                        "organization:{{.organizationID}}#manager@user:{{.creatorID}}"
-                    ],
-                    RelationshipsDelete: []
-                )
-            ])
-        ]), cancellationToken);
 
         // Act
-        await dataService.RunBundleAsync(new RunBundleRequest("organization_created", new()
-        {
-            { "creatorID", "1" },
-            { "organizationID", "1" }
-        }), cancellationToken);
+        var response = await dataService.DeleteDataAsync(new(
+            TupleFilter: new(null, null, null),
+            AttributeFilter: new(null, null)
+        ), cancellationToken);
+
+        // Assert
+        await Assert.That(response).IsNotNull();
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Read_Relationships))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Delete_Filtered_Tuples(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        await dataService.DeleteDataAsync(new(
+            TupleFilter: new(new EntityFilter(
+                Type: "document",
+                Ids: ["2"]
+            ), null, null),
+            AttributeFilter: new(null, null)
+        ), cancellationToken);
 
         // Assert
         var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
             Metadata: new(),
             Filter: new(
-                Entity: new("organization", ["1"]),
+                Entity: null,
                 Relation: null,
                 Subject: null
             ),
-            PageSize: 10
+            PageSize: 10,
+            ContinuousToken: null
         ), cancellationToken);
 
         await Assert.That(response).IsNotNull();
-        await Assert.That(response.Tuples.Count).IsEqualTo(2);
-        await Assert.That(response.Tuples[0].Relation).IsEqualTo("admin");
-        await Assert.That(response.Tuples[0].Subject.Type).IsEqualTo("user");
-        await Assert.That(response.Tuples[0].Subject.Id).IsEqualTo("1");
-        await Assert.That(response.Tuples[1].Relation).IsEqualTo("manager");
-        await Assert.That(response.Tuples[1].Subject.Type).IsEqualTo("user");
-        await Assert.That(response.Tuples[1].Subject.Id).IsEqualTo("1");
+        await Assert.That(response.Tuples.Count).IsEqualTo(1);
+        await Assert.That(response.Tuples[0].Entity.Id).IsEqualTo("1");
+    }
+
+    [Test]
+    [DependsOn(nameof(Data_Service_Can_Write_Tuple))]
+    [DependsOn(nameof(Data_Service_Can_Read_Attributes_Without_Filter))]
+    [DependsOn<GrpcSchemaServiceTests>(nameof(SchemaServiceTestsBase.Schema_Service_Can_Write))]
+    public async Task Data_Service_Can_Delete_Filtered_Attributes(CancellationToken cancellationToken)
+    {
+        // Arrange
+        var schema = await SchemaHelper.LoadSchemaAsync("valid/attributes-and-relations.perm", cancellationToken);
+        var schemaService = Services.GetRequiredService<ISchemaService>();
+        var dataService = Services.GetRequiredService<IDataService>();
+        await schemaService.WriteSchemaAsync(new WriteSchemaRequest(schema), cancellationToken);
+        await DataServiceFixtures.GenerateRelationShipsWithAttributes(dataService, cancellationToken);
+
+        // Act
+        await dataService.DeleteDataAsync(new(
+            TupleFilter: new(null, null, null),
+            AttributeFilter: new(new EntityFilter(
+                Type: "document",
+                Ids: ["1"]
+            ), ["name", "fault_tolerance"])
+        ), cancellationToken);
+
+        // Assert
+        var response = await dataService.ReadAttributesAsync(new ReadAttributesRequest(
+            Metadata: new(),
+            Filter: new(
+                Entity: null,
+                Attributes: null
+            ),
+            PageSize: 10,
+            ContinuousToken: null
+        ), cancellationToken);
+
+        await Assert.That(response).IsNotNull();
+        await Assert.That(response.Attributes.Count).IsEqualTo(6);
     }
 }

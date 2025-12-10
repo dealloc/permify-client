@@ -37,6 +37,11 @@ public static partial class DataServiceMapper
     public static partial RunBundleResponse MapToRunBundleResponse(BundleRunResponse response);
 
     /// <summary>
+    /// Maps a gRPC DataDeleteResponse to domain DeleteDataResponse.
+    /// </summary>
+    public static partial DeleteDataResponse MapToDeleteDataResponse(DataDeleteResponse response);
+
+    /// <summary>
     /// Maps a gRPC Attribute to domain AttributeEntity.
     /// </summary>
     [MapProperty(nameof(Base.V1.Attribute.Attribute_), nameof(AttributeEntity.Attribute))]

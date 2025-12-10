@@ -21,4 +21,6 @@ internal static partial class DataServiceMapper
     public static partial ReadAttributesResponse MapToReadAttributesResponse(AttributeReadResponse response);
 
     public static partial RunBundleResponse MapToRunBundleResponse(BundleRunResponse response);
+
+    public static partial DeleteDataResponse MapToDeleteDataResponse(DataDeleteResponse response);
 }

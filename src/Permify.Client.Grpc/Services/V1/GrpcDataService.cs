@@ -12,7 +12,10 @@ using Permify.Client.Models.V1.Data;
 using Permify.Client.Options;
 
 using Attribute = Base.V1.Attribute;
+using AttributeFilter = Base.V1.AttributeFilter;
 using EntityFilter = Base.V1.EntityFilter;
+using SubjectFilter = Base.V1.SubjectFilter;
+using TupleFilter = Base.V1.TupleFilter;
 
 namespace Permify.Client.Grpc.Services.V1;
 
@@ -176,6 +179,52 @@ public sealed class GrpcDataService(
             }, cancellationToken: cancellationToken).ResponseAsync;
 
             return DataServiceMapper.MapToRunBundleResponse(response);
+        }
+        catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteDataResponse> DeleteDataAsync(
+        DeleteDataRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await client.DeleteAsync(new DataDeleteRequest
+            {
+                TenantId = options.Value.TenantId,
+                TupleFilter = new TupleFilter
+                {
+                    Entity = new EntityFilter
+                    {
+                        Type = request.TupleFilter.Entity?.Type ?? string.Empty,
+                        Ids = { request.TupleFilter.Entity?.Ids ?? [] }
+                    },
+                    Relation = request.TupleFilter.Relation ?? string.Empty,
+                    Subject = new SubjectFilter
+                    {
+                        Type = request.TupleFilter.Subject?.Type ?? string.Empty,
+                        Ids = { request.TupleFilter.Subject?.Ids ?? [] },
+                        Relation = request.TupleFilter.Subject?.Relation ?? string.Empty
+                    }
+                },
+                AttributeFilter = new AttributeFilter
+                {
+                    Entity = new EntityFilter
+                    {
+                        Type = request.TupleFilter.Entity?.Type ?? string.Empty,
+                        Ids = { request.TupleFilter.Entity?.Ids ?? [] }
+                    },
+                    Attributes = { request.AttributeFilter.Attributes ?? [] }
+                }
+            }, cancellationToken: cancellationToken).ResponseAsync;
+
+            return DataServiceMapper.MapToDeleteDataResponse(response);
         }
         catch (RpcException exception) when (ThrowHelper.ShouldCatchException(exception))
         {

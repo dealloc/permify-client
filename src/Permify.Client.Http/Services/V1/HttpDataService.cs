@@ -11,9 +11,10 @@ using Permify.Client.Http.Mappers.V1;
 using Permify.Client.Models.V1.Data;
 using Permify.Client.Options;
 
-using Riok.Mapperly.Abstractions;
-
+using AttributeFilter = Permify.Client.Http.Generated.Models.AttributeFilter;
 using EntityFilter = Permify.Client.Http.Generated.Models.EntityFilter;
+using SubjectFilter = Permify.Client.Http.Generated.Models.SubjectFilter;
+using TupleFilter = Permify.Client.Http.Generated.Models.TupleFilter;
 
 namespace Permify.Client.Http.Services.V1;
 
@@ -146,7 +147,7 @@ internal sealed class HttpDataService(
                             Type = request.Filter?.Entity?.Type ?? string.Empty,
                             Ids = request.Filter?.Entity?.Ids.ToList() ?? []
                         },
-                        Attributes = request.Filter?.Attributes.ToList() ?? []
+                        Attributes = request.Filter?.Attributes?.ToList() ?? []
                     },
                     PageSize = request.PageSize,
                     ContinuousToken = request.ContinuousToken
@@ -190,6 +191,56 @@ internal sealed class HttpDataService(
                 throw new NullReferenceException("Response cannot be null");
 
             return DataServiceMapper.MapToRunBundleResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DeleteDataResponse> DeleteDataAsync(
+        DeleteDataRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await Datas.DeletePath.PostAsync(
+                new DeleteBody
+                {
+                    TupleFilter = new TupleFilter
+                    {
+                        Entity = new EntityFilter
+                        {
+                            Type = request.TupleFilter.Entity?.Type ?? string.Empty,
+                            Ids = request.TupleFilter.Entity?.Ids.ToList() ?? []
+                        },
+                        Relation = request.TupleFilter.Relation ?? string.Empty,
+                        Subject = new SubjectFilter
+                        {
+                            Type = request.TupleFilter.Subject?.Type ?? string.Empty,
+                            Ids = request.TupleFilter.Subject?.Ids.ToList() ?? [],
+                        }
+                    },
+                    AttributeFilter = new AttributeFilter
+                    {
+                        Entity = new EntityFilter
+                        {
+                            Type = request.AttributeFilter.Entity?.Type ?? string.Empty,
+                            Ids = request.AttributeFilter.Entity?.Ids.ToList() ?? []
+                        },
+                        Attributes = request.AttributeFilter.Attributes?.ToList() ?? []
+                    }
+                },
+                cancellationToken: cancellationToken
+            );
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return DataServiceMapper.MapToDeleteDataResponse(response);
         }
         catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
         {

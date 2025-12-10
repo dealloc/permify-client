@@ -50,4 +50,12 @@ public interface IDataService
     /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
     /// <exception cref="PermifyClientException">If Permify returns an error while attempting to execute the bundle.</exception>
     Task<RunBundleResponse> RunBundleAsync(RunBundleRequest request, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes obsolete authorization data from Permify.
+    /// </summary>
+    /// <param name="request">The <see cref="DeleteDataRequest" /> to send.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to execute the bundle.</exception>
+    Task<DeleteDataResponse> DeleteDataAsync(DeleteDataRequest request, CancellationToken cancellationToken = default);
 }
