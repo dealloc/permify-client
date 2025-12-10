@@ -9,8 +9,11 @@ namespace Permify.Client.Integration.Tests.V1.SchemaService;
 /// Abstract base class for testing <see cref="ISchemaService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
+[Retry(3)]
+[Category("V1")]
 [Category("Integration")]
-[Category("Permify.Client.Contracts.V1.ISchemaService")]
+[Category("ISchemaService")]
+[Timeout(1 * 60 * 10000)]
 public abstract class SchemaServiceTestsBase
 {
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]

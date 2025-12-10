@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Permify.Client;
-using Permify.Client.Contracts;
 using Permify.Client.Contracts.V1;
+using Permify.Client.Models.V1.Schema;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.AddServiceDefaults();
@@ -20,10 +20,8 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 var app = builder.Build();
 app.MapDefaultEndpoints();
 
-app.MapGet("/",
-    async static ([FromServices] ISchemaService svc) =>
-    await svc.ListSchemaAsync(new(), CancellationToken.None));
-// await svc.WriteSchemaAsync(new WriteSchemaRequest("entity user {}"), CancellationToken.None));
+app.MapGet("/",  async static ([FromServices] ISchemaService svc) =>
+    await svc.WriteSchemaAsync(new WriteSchemaRequest("entity user {}"), CancellationToken.None));
 
 
 app.Run();

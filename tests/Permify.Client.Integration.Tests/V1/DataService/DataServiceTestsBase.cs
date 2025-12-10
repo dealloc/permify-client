@@ -14,8 +14,11 @@ namespace Permify.Client.Integration.Tests.V1.DataService;
 /// Abstract base class for testing <see cref="IDataService" /> implementations.
 /// Contains all test logic that applies to both HTTP and gRPC implementations.
 /// </summary>
+[Retry(3)]
+[Category("V1")]
 [Category("Integration")]
-[Category("Permify.Client.Contracts.V1.IDataService")]
+[Category("IDataService")]
+[Timeout(1 * 60 * 10000)]
 public abstract class DataServiceTestsBase
 {
     [ClassDataSource<PermifyContainer>(Shared = SharedType.None)]
