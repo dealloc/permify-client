@@ -3,7 +3,6 @@ using Microsoft.Kiota.Http.HttpClientLibrary;
 
 using Permify.Client.Contracts.V1;
 using Permify.Client.Http.Generated;
-using Permify.Client.Http.Services;
 using Permify.Client.Http.Services.V1;
 
 // ReSharper disable once CheckNamespace
@@ -39,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITenancyService, HttpTenancyService>();
         services.AddScoped<IBundleService, HttpBundleService>();
         services.AddScoped<IDataService, HttpDataService>();
+        services.AddScoped<IPermissionService, HttpPermissionService>();
 
         return services;
     }

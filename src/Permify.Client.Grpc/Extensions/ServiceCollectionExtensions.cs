@@ -28,6 +28,9 @@ public static class ServiceCollectionExtensions
         services.AddGrpcClient<Base.V1.Data.DataClient>(options => options.Address = new Uri(baseUrl));
         services.AddScoped<IDataService, GrpcDataService>();
 
+        services.AddGrpcClient<Base.V1.Permission.PermissionClient>(options => options.Address = new Uri(baseUrl));
+        services.AddScoped<IPermissionService, GrpcPermissionService>();
+
         return services;
     }
 }
