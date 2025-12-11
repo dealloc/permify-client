@@ -12,7 +12,7 @@ public sealed class GrpcSchemaServiceTests : SchemaServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyGrpcClients(
-            PermifyContainer.GrpcEndpoint.ToString()
+            PermifyContainer.GrpcEndpoint
         );
     }
 }

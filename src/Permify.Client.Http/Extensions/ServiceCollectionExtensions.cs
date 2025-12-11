@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="baseUrl"></param>
-    public static IServiceCollection AddPermifyHttpClients(this IServiceCollection services, string baseUrl)
+    public static IServiceCollection AddPermifyHttpClients(this IServiceCollection services, Uri baseUrl)
     {
         services.AddHttpClient(nameof(ApiClient));
         services.AddScoped<ApiClient>(provider =>
@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
                 auth,
                 httpClient: factory.CreateClient(nameof(ApiClient))
             );
-            adapter.BaseUrl = baseUrl;
+            adapter.BaseUrl = baseUrl.ToString();
 
             return new ApiClient(adapter);
         });

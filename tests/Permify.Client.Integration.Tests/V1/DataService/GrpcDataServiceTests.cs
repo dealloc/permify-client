@@ -12,7 +12,7 @@ public class GrpcDataServiceTests : DataServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyGrpcClients(
-            PermifyContainer.GrpcEndpoint.ToString()
+            PermifyContainer.GrpcEndpoint
         );
     }
 }

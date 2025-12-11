@@ -12,7 +12,7 @@ public class HttpDataServiceTests : DataServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyHttpClients(
-            PermifyContainer.HttpEndpoint.ToString()
+            PermifyContainer.HttpEndpoint
         );
     }
 }

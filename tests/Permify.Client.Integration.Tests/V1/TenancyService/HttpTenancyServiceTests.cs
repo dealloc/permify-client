@@ -17,7 +17,7 @@ public sealed class HttpTenancyServiceTests : TenancyServiceTestsBase
     {
         Services = ServicesHelper.CreatePermifyProvider(
             services => services.AddPermifyHttpClients(
-                PermifyContainer.HttpEndpoint.ToString()
+                PermifyContainer.HttpEndpoint
             )
         );
     }

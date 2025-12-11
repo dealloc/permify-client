@@ -12,7 +12,7 @@ public sealed class HttpSchemaServiceTests : SchemaServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyHttpClients(
-            PermifyContainer.HttpEndpoint.ToString()
+            PermifyContainer.HttpEndpoint
         );
     }
 }

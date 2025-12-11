@@ -39,8 +39,8 @@ public abstract class PermifyBenchmarkBase
         await PermifyContainer.StartAsync();
 
         // Get endpoint URLs
-        var httpEndpoint = $"http://{PermifyContainer.Hostname}:{PermifyContainer.GetMappedPublicPort(3476)}";
-        var grpcEndpoint = $"http://{PermifyContainer.Hostname}:{PermifyContainer.GetMappedPublicPort(3478)}";
+        var httpEndpoint = new Uri($"http://{PermifyContainer.Hostname}:{PermifyContainer.GetMappedPublicPort(3476)}");
+        var grpcEndpoint = new Uri($"http://{PermifyContainer.Hostname}:{PermifyContainer.GetMappedPublicPort(3478)}");
 
         // Create HTTP provider
         HttpProvider = CreateProvider(services =>

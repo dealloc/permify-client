@@ -12,7 +12,7 @@ public class HttpBundleServiceTests : BundleServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyHttpClients(
-            PermifyContainer.HttpEndpoint.ToString()
+            PermifyContainer.HttpEndpoint
         );
     }
 }

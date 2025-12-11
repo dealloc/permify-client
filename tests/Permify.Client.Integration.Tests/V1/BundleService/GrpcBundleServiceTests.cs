@@ -12,7 +12,7 @@ public class GrpcBundleServiceTests : BundleServiceTestsBase
     protected override void ConfigureServicesAsync(IServiceCollection services)
     {
         services.AddPermifyGrpcClients(
-            PermifyContainer.GrpcEndpoint.ToString()
+            PermifyContainer.GrpcEndpoint
         );
     }
 }

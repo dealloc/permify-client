@@ -17,7 +17,7 @@ public sealed class GrpcTenancyServiceTests : TenancyServiceTestsBase
     {
         Services = ServicesHelper.CreatePermifyProvider(
             services => services.AddPermifyHttpClients(
-                PermifyContainer.HttpEndpoint.ToString()
+                PermifyContainer.HttpEndpoint
             )
         );
     }
