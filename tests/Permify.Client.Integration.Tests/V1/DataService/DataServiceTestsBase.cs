@@ -242,7 +242,7 @@ public abstract class DataServiceTestsBase : SharedPermifyContainerTest
         // Act
         var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
             Metadata: new(),
-            Filter: new (
+            Filter: new(
                 Entity: null,
                 Relation: null,
                 Subject: null
@@ -273,7 +273,7 @@ public abstract class DataServiceTestsBase : SharedPermifyContainerTest
         // Act
         var response = await dataService.ReadRelationshipsAsync(new ReadRelationshipsRequest(
             Metadata: new(),
-            Filter: new (
+            Filter: new(
                 Entity: new EntityFilter(
                     Type: "document",
                     Ids: ["1"]

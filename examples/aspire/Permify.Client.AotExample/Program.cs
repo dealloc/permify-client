@@ -20,7 +20,7 @@ builder.Services.ConfigureHttpJsonOptions(options =>
 var app = builder.Build();
 app.MapDefaultEndpoints();
 
-app.MapGet("/",  async static ([FromServices] ISchemaService svc) =>
+app.MapGet("/", async static ([FromServices] ISchemaService svc) =>
     await svc.WriteSchemaAsync(new WriteSchemaRequest("entity user {}"), CancellationToken.None));
 
 
