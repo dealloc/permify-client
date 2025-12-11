@@ -16,11 +16,15 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds clients to interact with the Permify HTTP API.
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="baseUrl"></param>
-    public static IServiceCollection AddPermifyHttpClients(this IServiceCollection services, Uri baseUrl)
+    public static IServiceCollection AddPermifyHttpClients(
+        this IServiceCollection services,
+        Uri baseUrl,
+        Action<IHttpClientBuilder>? configureClient = null
+    )
     {
-        services.AddHttpClient(nameof(ApiClient));
+        var client = services.AddHttpClient(nameof(ApiClient));
+        configureClient?.Invoke(client);
+
         services.AddScoped<ApiClient>(provider =>
         {
             var factory = provider.GetRequiredService<IHttpClientFactory>();
