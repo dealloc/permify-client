@@ -26,24 +26,14 @@ See [Permify documentation](https://docs.permify.co) for API details.
 This is the current roadmap for the unofficial Permify client, in no particular order:
 
 - [ ] Schema Service
-  - [ ] HTTP support
-  - [ ] gRPC support
-- [ ] Data Service
-    - [ ] HTTP support
-    - [ ] gRPC support
+    - [ ] Read schema (polymorphic trees are difficult)
 - [ ] Permission Service
-    - [ ] HTTP support
-    - [ ] gRPC support
-- [ ] Tenancy Service
-    - [ ] HTTP support
-    - [ ] gRPC support
+    - [ ] Expand API
+    - [ ] Subject Filtering
+    - [ ] Lookup Entity (Data Filtering)
+    - [ ] Lookup Entity (Streaming)
+    - [ ] Subject Permission List
 - [ ] Bundle Service
-    - [ ] HTTP support
-    - [ ] gRPC support
-- [ ] Watch Service
-    - [ ] gRPC support
+    - [ ] Delete Bundle
 - [ ] OpenTelemetry integration
 - [ ] Authn support for Permify servers that require it
-- [ ] Aspire integration
-  - [ ] Service Discovery support
-- [ ] Benchmarks & integration tests
