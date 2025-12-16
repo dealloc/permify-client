@@ -86,4 +86,78 @@ internal sealed class HttpPermissionService(
             throw;
         }
     }
+
+    /// <inheritdoc />
+    public async Task<BulkCheckAccessControlResponse> BulkCheckAccessControlAsync(
+        BulkCheckAccessControlRequest request,
+        CancellationToken cancellationToken = default
+    )
+    {
+        try
+        {
+            var response = await Permissions.BulkCheck.PostAsync(new BulkCheckBody
+            {
+                Metadata = new PermissionCheckRequestMetadata
+                {
+                    SnapToken = request.Metadata.SnapToken ?? string.Empty,
+                    SchemaVersion = request.Metadata.SchemaVersion ?? string.Empty,
+                    Depth = request.Metadata.Depth
+                },
+                Arguments = request.Arguments?.Select(argument => new Argument
+                {
+                    ComputedAttribute = new ComputedAttribute
+                    {
+                        Name = argument
+                    }
+                }).ToList() ?? [],
+                Items = request.Items.Select(item => new PermissionBulkCheckRequestItem
+                {
+                    Entity = new Entity
+                    {
+                        Type = item.Entity.Type,
+                        Id = item.Entity.Id
+                    },
+                    Permission = item.Permission,
+                    Subject = new Subject
+                    {
+                        Type = item.Subject.Type,
+                        Id = item.Subject.Id,
+                        Relation = item.Subject.Relation
+                    }
+                }).ToList(),
+                Context = new Context
+                {
+                    Tuples = request.Context?.Tuples.Select(tuple => new TupleObject
+                    {
+                        Entity = new Entity { Type = tuple.Entity.Type, Id = tuple.Entity.Id },
+                        Relation = tuple.Relation,
+                        Subject = new Subject { Type = tuple.Subject.Type, Id = tuple.Subject.Id, }
+                    }).ToList() ?? [],
+                    Attributes = request.Context?.Attributes.Select(attribute => new AttributeObject
+                    {
+                        Entity = new Entity { Type = attribute.Entity.Type, Id = attribute.Entity.Id },
+                        Attribute = attribute.Attribute,
+                        Value = AnyValueMapper.MapToAny(attribute.Value)
+                    }).ToList() ?? [],
+                    Data = new Context_data
+                    {
+                        AdditionalData = request.Context?.Data.ToDictionary(
+                                kvp => kvp.Key,
+                                kvp => kvp.Value as object
+                            ) ?? []
+                    }
+                }
+            }, cancellationToken : cancellationToken);
+
+            if (response is null)
+                throw new NullReferenceException("Response cannot be null");
+
+            return PermissionServiceMapper.MapToBulkCheckAccessControlResponse(response);
+        }
+        catch (Status exception) when (ThrowHelper.ShouldCatchException(exception))
+        {
+            ThrowHelper.ThrowPermifyClientException(exception);
+            throw;
+        }
+    }
 }

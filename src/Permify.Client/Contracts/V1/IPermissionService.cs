@@ -45,4 +45,17 @@ public interface IPermissionService
         CheckAccessControlRequest request,
         CancellationToken cancellationToken = default
     );
+
+    /// <summary>
+    /// BulkCheck method receives a PermissionBulkCheckRequest containing multiple check requests
+    /// and returns a PermissionBulkCheckResponse with results for each request.
+    /// Maximum 100 requests can be processed in a single bulk operation.
+    /// </summary>
+    /// <param name="request">The <see cref="BulkCheckAccessControlRequest" /> request.</param>
+    /// <param name="cancellationToken">A <see cref="CancellationToken" /> that can be used to cancel the async operation.</param>
+    /// <exception cref="PermifyClientException">If Permify returns an error while attempting to check access.</exception>
+    Task<BulkCheckAccessControlResponse> BulkCheckAccessControlAsync(
+        BulkCheckAccessControlRequest request,
+        CancellationToken cancellationToken = default
+    );
 }

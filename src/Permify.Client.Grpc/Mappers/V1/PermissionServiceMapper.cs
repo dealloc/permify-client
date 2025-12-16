@@ -19,4 +19,9 @@ internal static partial class PermissionServiceMapper
     /// Maps a gRPC PermissionCheckResponse to domain CheckAccessControlResponse.
     /// </summary>
     public static partial CheckAccessControlResponse MapToCheckAccessControlResponse(PermissionCheckResponse response);
+
+    /// <summary>
+    /// Maps a gRPC BulkPermissionCheckResponse to domain BulkCheckAccessControlResponse.
+    /// </summary>
+    public static partial BulkCheckAccessControlResponse MapToBulkCheckAccessControlResponse(PermissionBulkCheckResponse response);
 }

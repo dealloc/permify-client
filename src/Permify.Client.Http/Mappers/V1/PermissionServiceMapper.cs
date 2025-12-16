@@ -19,6 +19,8 @@ internal static partial class PermissionServiceMapper
 {
     public static partial CheckAccessControlResponse MapToCheckAccessControlResponse(PermissionCheckResponse response);
 
+    public static partial BulkCheckAccessControlResponse MapToBulkCheckAccessControlResponse(PermissionBulkCheckResponse response);
+
     [MapperIgnoreTargetValue(CheckAccessControlResponse.CheckResult.CHECK_RESULT_UNSPECIFIED)]
     private static partial CheckAccessControlResponse.CheckResult MapToCheckResult(CheckResult source);
 }
