@@ -147,7 +147,7 @@ internal sealed class HttpPermissionService(
                             ) ?? []
                     }
                 }
-            }, cancellationToken : cancellationToken);
+            }, cancellationToken: cancellationToken);
 
             if (response is null)
                 throw new NullReferenceException("Response cannot be null");
