@@ -16,7 +16,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// Implements <see cref="IBundleService" /> using gRPC.
 /// </summary>
-public sealed class GrpcBundleService(
+internal sealed class GrpcBundleService(
     IOptions<PermifyOptions> options,
     Base.V1.Bundle.BundleClient client
 ) : IBundleService

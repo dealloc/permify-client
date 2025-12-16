@@ -22,7 +22,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// Implements <see cref="IDataService" /> using gRPC.
 /// </summary>
-public sealed class GrpcDataService(
+internal sealed class GrpcDataService(
     IOptions<PermifyOptions> options,
     Base.V1.Data.DataClient client
 ) : IDataService

@@ -22,7 +22,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// Implements <see cref="IPermissionService" /> using gRPC.
 /// </summary>
-public sealed class GrpcPermissionService(
+internal sealed class GrpcPermissionService(
     IOptions<PermifyOptions> options,
     Base.V1.Permission.PermissionClient client
 ) : IPermissionService

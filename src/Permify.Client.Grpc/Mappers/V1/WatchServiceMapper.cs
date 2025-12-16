@@ -11,7 +11,7 @@ namespace Permify.Client.Grpc.Mappers.V1;
 /// </summary>
 [Mapper]
 [UseStaticMapper(typeof(DateTimeOffsetMapper))]
-public static partial class WatchServiceMapper
+internal static partial class WatchServiceMapper
 {
     internal static partial WatchResponse MapToWatchResponse(Base.V1.WatchResponse response);
 

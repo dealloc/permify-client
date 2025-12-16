@@ -12,7 +12,7 @@ namespace Permify.Client.Grpc.Mappers.V1;
 /// </summary>
 [Mapper]
 [UseStaticMapper(typeof(DateTimeOffsetMapper))]
-public static partial class BundleServiceMapper
+internal static partial class BundleServiceMapper
 {
     /// <summary>
     /// Maps a gRPC BundleWriteResponse to domain WriteBundleResponse.

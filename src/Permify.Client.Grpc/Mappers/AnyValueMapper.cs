@@ -11,7 +11,7 @@ namespace Permify.Client.Grpc.Mappers;
 /// <summary>
 /// Handles mapping to <see cref="Any"/> values.
 /// </summary>
-public static class AnyValueMapper
+internal static class AnyValueMapper
 {
     private const string TypeUrlPrefix = "type.googleapis.com";
 

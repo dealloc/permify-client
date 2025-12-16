@@ -13,7 +13,7 @@ namespace Permify.Client.Grpc.Mappers.V1;
 [Mapper]
 [UseStaticMapper(typeof(AnyValueMapper))]
 [UseStaticMapper(typeof(DateTimeOffsetMapper))]
-public static partial class PermissionServiceMapper
+internal static partial class PermissionServiceMapper
 {
     /// <summary>
     /// Maps a gRPC PermissionCheckResponse to domain CheckAccessControlResponse.

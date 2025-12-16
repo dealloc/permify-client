@@ -16,7 +16,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// Implements <see cref="ISchemaService"/> using gRPC.
 /// </summary>
-public sealed class GrpcSchemaService(
+internal sealed class GrpcSchemaService(
     IOptions<PermifyOptions> options,
     Schema.SchemaClient client
 ) : ISchemaService

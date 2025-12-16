@@ -17,7 +17,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// gRPC implementation of the Watch service.
 /// </summary>
-public sealed class GrpcWatchService(
+internal sealed class GrpcWatchService(
     IOptions<PermifyOptions> options,
     Base.V1.Watch.WatchClient client
 ) : IWatchService

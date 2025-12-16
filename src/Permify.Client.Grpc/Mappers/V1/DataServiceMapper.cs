@@ -14,7 +14,7 @@ namespace Permify.Client.Grpc.Mappers.V1;
 [Mapper]
 [UseStaticMapper(typeof(AnyValueMapper))]
 [UseStaticMapper(typeof(DateTimeOffsetMapper))]
-public static partial class DataServiceMapper
+internal static partial class DataServiceMapper
 {
     /// <summary>
     /// Maps a gRPC WriteDataResponse to domain DataWriteResponsew.

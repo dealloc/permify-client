@@ -13,7 +13,7 @@ namespace Permify.Client.Grpc.Services.V1;
 /// <summary>
 /// Implements <see cref="ISchemaService"/> using gRPC.
 /// </summary>
-public sealed class GrpcTenantService(
+internal sealed class GrpcTenantService(
     Tenancy.TenancyClient client
 ) : ITenancyService
 {
