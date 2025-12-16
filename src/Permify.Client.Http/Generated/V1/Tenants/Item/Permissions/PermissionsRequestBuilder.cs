@@ -2,6 +2,7 @@
 #pragma warning disable CS0618
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions;
+using Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.BulkCheck;
 using Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.Check;
 using Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.Expand;
 using Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.LookupEntity;
@@ -20,6 +21,11 @@ namespace Permify.Client.Http.Generated.V1.Tenants.Item.Permissions
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     internal partial class PermissionsRequestBuilder : BaseRequestBuilder
     {
+        /// <summary>The bulkCheck property</summary>
+        public global::Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.BulkCheck.BulkCheckRequestBuilder BulkCheck
+        {
+            get => new global::Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.BulkCheck.BulkCheckRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>The check property</summary>
         public global::Permify.Client.Http.Generated.V1.Tenants.Item.Permissions.Check.CheckRequestBuilder Check
         {

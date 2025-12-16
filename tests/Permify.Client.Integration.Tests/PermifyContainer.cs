@@ -20,7 +20,7 @@ public sealed class PermifyContainer : IAsyncInitializer, IAsyncDisposable
     /// The Permify container instance.
     /// </summary>
     public IContainer Container => field ??= new ContainerBuilder()
-        .WithImage("ghcr.io/permify/permify:v1.5.3")
+        .WithImage("ghcr.io/permify/permify:v1.5.4")
         .WithPortBinding(3476, assignRandomHostPort: true)
         .WithPortBinding(3478, assignRandomHostPort: true)
         .WithWaitStrategy(Wait.ForUnixContainer().UntilHttpRequestIsSucceeded(r => r.ForPath("/healthz").ForPort(3476)))

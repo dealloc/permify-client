@@ -1,6 +1,6 @@
 # Permify .NET Client
 
-[![Permify v1.5.3](https://img.shields.io/badge/Permify-v1.5.3-4F14CC)](https://docs.permify.co)
+[![Permify v1.5.4](https://img.shields.io/badge/Permify-v1.5.4-4F14CC)](https://docs.permify.co)
 [![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 
 Unofficial .NET client for [Permify](https://permify.co) with support for both HTTP and gRPC APIs.

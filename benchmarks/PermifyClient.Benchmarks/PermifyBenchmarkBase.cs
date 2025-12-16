@@ -29,7 +29,7 @@ public abstract class PermifyBenchmarkBase
     {
         // Initialize Permify container with both HTTP and gRPC ports
         PermifyContainer = new ContainerBuilder()
-            .WithImage("ghcr.io/permify/permify:v1.5.3")
+            .WithImage("ghcr.io/permify/permify:v1.5.4")
             .WithPortBinding(3476, assignRandomHostPort: true)
             .WithPortBinding(3478, assignRandomHostPort: true)
             .WithWaitStrategy(Wait.ForUnixContainer()

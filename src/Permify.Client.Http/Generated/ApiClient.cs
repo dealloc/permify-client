@@ -39,7 +39,7 @@ namespace Permify.Client.Http.Generated
             ApiClientBuilder.RegisterDefaultDeserializer<FormParseNodeFactory>();
             if (string.IsNullOrEmpty(RequestAdapter.BaseUrl))
             {
-                RequestAdapter.BaseUrl = "https://raw.githubusercontent.com/Permify/permify/887dabd61bbaf1951b93faa563db1e4b26c7caa7/docs/api-reference/openapiv2";
+                RequestAdapter.BaseUrl = "https://raw.githubusercontent.com/Permify/permify/27e684d1d36cee2715157ae61e7b835f8610a70b/docs/api-reference/openapiv2";
             }
             PathParameters.TryAdd("baseurl", RequestAdapter.BaseUrl);
         }

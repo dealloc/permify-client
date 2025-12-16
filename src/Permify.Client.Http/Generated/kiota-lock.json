@@ -1,6 +1,6 @@
 {
-  "descriptionHash": "3123399457C38236F6A78ACC44726E6117AC2D5FA58E4751D0EE51F896A67F5872BE379E44CC5F3838CB9397A21F44383185866FF6890D6EC22A794D4948BC84",
-  "descriptionLocation": "https://raw.githubusercontent.com/Permify/permify/887dabd61bbaf1951b93faa563db1e4b26c7caa7/docs/api-reference/openapiv2/apidocs.swagger.json",
+  "descriptionHash": "E65B3F6306D42D7888AE338BFA85328AFCF65A706CEA344FDA02AC6AC34CCDF6549403B04CED08424072047C439DE2BFF16CBDFDB8DDDE1A9D11AD32FB9EEB64",
+  "descriptionLocation": "https://raw.githubusercontent.com/Permify/permify/27e684d1d36cee2715157ae61e7b835f8610a70b/docs/api-reference/openapiv2/apidocs.swagger.json",
   "lockFileVersion": "1.0.0",
   "kiotaVersion": "1.29.0",
   "clientClassName": "ApiClient",
