@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <InvariantGlobalization>true</InvariantGlobalization>
-        <PublishAot>true</PublishAot>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishAot>true</PublishAot>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\..\src\Permify.Client.Grpc\Permify.Client.Grpc.csproj" />
-      <ProjectReference Include="..\..\..\src\Permify.Client.Http\Permify.Client.Http.csproj" />
-      <ProjectReference Include="..\Permify.Client.ServiceDefaults\Permify.Client.ServiceDefaults.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Permify.Client.Grpc\Permify.Client.Grpc.csproj"/>
+    <ProjectReference Include="..\..\..\src\Permify.Client.Http\Permify.Client.Http.csproj"/>
+    <ProjectReference Include="..\Permify.Client.ServiceDefaults\Permify.Client.ServiceDefaults.csproj"/>
+  </ItemGroup>
 
 </Project>
